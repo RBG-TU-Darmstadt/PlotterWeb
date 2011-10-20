@@ -1,0 +1,38 @@
+body {
+	margin:0; padding:0; border:0;
+	font-family:Helvetica, Arial, sans-serif;
+	color:#333333;
+	font-size:12px;
+}
+
+.bill-view {
+	position:relative;
+	padding-top:60px; 
+	margin:10px auto 0;
+	border:0;
+	width:800px;
+	background-image:url(../images/rbg.jpg);
+	background-position: right top;
+	background-repeat: no-repeat;
+}
+
+.bill-view table {
+	width:800px;
+	font-size:14px;
+}
+
+.bill-view table th {
+	padding-top: 2px;
+}
+
+.bill-view table td {
+	padding: 2px;
+}
+
+.bill-view .bill-buttons {	
+	margin-top:20px;
+}
+
+.bill-view .bill-btn-cnt {
+	display:inline;	
+}
