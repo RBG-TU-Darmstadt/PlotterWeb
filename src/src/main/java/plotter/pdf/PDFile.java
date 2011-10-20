@@ -3,6 +3,7 @@ package plotter.pdf;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,8 +13,11 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.lowagie.text.pdf.PdfReader;
 
 import plotter.connection.Manager;
 
@@ -23,57 +27,117 @@ public class PDFile extends File {
 
 	private UUID id = UUID.randomUUID();
 
-	private PDFDocument doc;
-	private ArrayList<File> images;
 	private final int MAX_HEIGHT = 120;
 	private final int MAX_WIDTH = 120;
 	private Metadata meta;
 	private String filename;
+
+	List<File> thumbnails = new ArrayList<File>();
 
 	public PDFile(String filename, String originalFileName) throws IOException {
 		super(filename);
 
 		this.filename = originalFileName;
 
-		// load the PDF Document
-		this.doc = new PDFDocument();
-		this.doc.load(this);
-
 		// set the Metadata
 		this.meta = new Metadata();
-
-		// initialize images Array
-		this.images = new ArrayList<File>();
-
-		// Create preview images
-//		try {
-//			this.convertToImages();
-//		} catch (RendererException e) {
-//			throw new IOException(e);
-//		} catch (DocumentException e) {
-//			throw new IOException(e);
-//		}
+		this.meta.setNumberOfPages(getPageCount());
 	}
 
 	/**
-	 * Convert PDF to preview images
+	 * Use iText to retrieve the number of pages of the PDF
 	 * 
-	 * @throws DocumentException 
-	 * @throws RendererException 
+	 * @return the number of pages
 	 * @throws IOException 
 	 */
-	public void convertToImages() throws IOException, RendererException, DocumentException {
-		SimpleRenderer renderer = new SimpleRenderer();
-		renderer.setResolution(72);
+	private int getPageCount() throws IOException {
+		int pageCount = 0;
 
-		List<Image> images = renderer.render(this.doc);
+		ByteArrayInputStream bais = null;
+		PdfReader reader = null;
 
-		this.meta.setNumberOfPages(images.size());
+		try {
+			reader = new PdfReader(new FileInputStream(this));
 
+			pageCount = reader.getNumberOfPages();
+		} catch (Exception e) {
+			throw new IOException("Could not retrieve page count.", e);
+		} finally {
+			if (reader != null)
+				reader.close();
+			IOUtils.closeQuietly(bais);
+		}
+
+		return pageCount;
+	}
+
+	/**
+	 * Convert PDF to images
+	 * 
+	 * @param resolution
+	 *            the resolution in dpo
+	 * @return a list of converted images
+	 * @throws IOException
+	 */
+	private List<Image> convertToImages(int resolution) throws IOException {
+		// Get temporary file names for images
+		File tmp = File.createTempFile("plotter_%d_", ".png");
+
+		ArrayList<String> command = new ArrayList<String>();
+
+		// Build command
+		command.add("/opt/local/bin/gs"); // TODO: Make this configurable
+		command.add("-dQUIET");
+		command.add("-dNOPAUSE");
+		command.add("-dBATCH");
+		command.add("-dSAFER");
+		command.add("-r" + resolution);
+		command.add("-sDEVICE=png16m");
+		command.add("-sOutputFile=" + tmp.getAbsolutePath());
+		command.add(this.getAbsolutePath());
+
+		ProcessBuilder processBuilder = new ProcessBuilder(command);
+		Process proc = processBuilder.start();
+
+		int exitCode;
+		try {
+			exitCode = proc.waitFor();
+		} catch (InterruptedException e) {
+			throw new IOException("PDF to image conversion interrupted.", e);
+		}
+
+		if (exitCode != 0) {
+			String errorMessage = IOUtils.toString(proc.getErrorStream())
+					+ " - " + IOUtils.toString(proc.getInputStream());
+
+			throw new IOException("PDF could not be converted to images, message: " + errorMessage);
+		}
+
+		// Retrieve images
+		List<Image> images = new ArrayList<Image>();
+		for(int i = 1; i <= meta.getNumberOfPages(); i++) {
+			String imageFilename = tmp.getAbsolutePath().replace("%d", Integer.toString(i));
+
+			images.add(ImageIO.read(new File(imageFilename)));
+		}
+
+		tmp.delete();
+
+		return images;
+	}
+
+	/**
+	 * Generate 72dpi thumbnails
+	 * 
+	 * @throws IOException
+	 */
+	public void generateThumbnails() throws IOException {
+		List<Image> images = convertToImages(72);
+		
 		for (int i = 0; i < images.size(); i++) {
 			// Retrieve a temporary file
 			File tmp = File.createTempFile(
-					"img" + i + "_" + this.getName(), ".png");
+					"plotter-thumbnail" + i + "_" + this.getName(), ".png");
 			tmp.deleteOnExit();
 
 			RenderedImage image = (RenderedImage) images.get(i);
@@ -98,27 +162,12 @@ public class PDFile extends File {
 
 			// Write image
 			ImageIO.write(scaledBufferedImage, "png", tmp);
-			this.images.add(tmp);
+			thumbnails.add(tmp);
 		}
-	}
-
-	/**
-	 * This method sends this PDF to the plotter, for details see
-	 * {@link Manager#sendFile()}.
-	 * 
-	 * @return boolean true on success, otherwise false
-	 */
-	public boolean sendFileToPrinter() {
-		Manager manager = new Manager();
-		return manager.sendFile(this);
 	}
 
 	public UUID getId() {
 		return id;
-	}
-
-	public List<File> getImages() {
-		return images;
 	}
 
 	public int getHeight() {
@@ -135,6 +184,10 @@ public class PDFile extends File {
 
 	public String getFilename() {
 		return filename;
+	}
+
+	public List<File> getThumbnails() {
+		return thumbnails;
 	}
 
 	public JSONObject toJSON() throws JSONException {

@@ -172,6 +172,9 @@ public class Manager {
 		PDFile pdf = null;
 		try {
 			pdf = new PDFile(tmp.getAbsolutePath(), file.getFilename());
+
+			// Generate thumbnails
+			pdf.generateThumbnails();
 		} catch (IOException e) {
 			e.printStackTrace();
 
@@ -184,7 +187,7 @@ public class Manager {
 		pdf.getMetadata().setJobKey(key);
 
 		List<String> images = new ArrayList<String>();
-		for (int i = 0; i < pdf.getImages().size(); i++) {
+		for (int i = 0; i < pdf.getMetadata().getNumberOfPages(); i++) {
 			images.add(request.getContextPath() + "/secure/preview/?key=" + key
 					+ "&num=" + i);
 		}
