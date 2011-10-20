@@ -286,7 +286,8 @@ public class Manager {
 		doc.setPrintDate(new Date());
 
 		// Print file
-		pdf.sendFileToPrinter();
+		// TODO: Implement new printing functionality
+//		pdf.sendFileToPrinter();
 
 		// save document and scriptsession
 		sessionTracker.getActivePrintJobs().put(
