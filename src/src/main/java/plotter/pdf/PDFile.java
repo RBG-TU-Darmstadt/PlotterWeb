@@ -19,8 +19,6 @@ import org.json.JSONObject;
 
 import com.lowagie.text.pdf.PdfReader;
 
-import plotter.connection.Manager;
-
 public class PDFile extends File {
 
 	private static final long serialVersionUID = 1578101753406396888L;
