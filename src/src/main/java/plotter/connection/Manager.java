@@ -249,7 +249,10 @@ public class Manager {
 				.getAttribute(Process.sessionJobs);
 		PrintJob job = jobs.get(jobKey);
 
-		if (!Prices.getInstance().getPrices().containsKey(format)) {
+		/*
+		 * Validate input
+		 */
+		if ( ! Prices.getInstance().getPrices().containsKey(format)) {
 			// Invalid format
 			return new JSONObject()
 					.put("success", false)
@@ -263,7 +266,7 @@ public class Manager {
 					.put("error", "copies-not-valid")
 				.toString();
 		}
-		if (!EmailValidator.getInstance().isValid(mail)) {
+		if ( ! EmailValidator.getInstance().isValid(mail)) {
 			// Invalid mail
 			return new JSONObject()
 					.put("success", false)
