@@ -72,4 +72,11 @@
 	<listener>
 		<listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
 	</listener>
+
+	<!-- Configuration initializer -->
+	<listener>
+		<listener-class>
+			plotter.servlet.InitializeContext
+		</listener-class>
+	</listener>
 </web-app>

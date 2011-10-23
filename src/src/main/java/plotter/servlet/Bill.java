@@ -3,7 +3,6 @@ package plotter.servlet;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 
+import plotter.util.Configuration;
+
 /**
  * Servlet implementation class Home
  */
@@ -19,12 +20,16 @@ public class Bill extends HttpServlet {
 
 	private static final long serialVersionUID = -6257366618447650527L;
 
+	Collection<String> allowedUsers;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public Bill() {
 		super();
-		// TODO Auto-generated constructor stub
+
+		// Load and parse allowed users
+		allowedUsers = Arrays.asList(Configuration.getProperty("plotter.bill.users").split(","));
 	}
 
 	/**
@@ -34,12 +39,6 @@ public class Bill extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		AttributePrincipal principal = (AttributePrincipal) request.getUserPrincipal();
-
-		Properties properties = new Properties();
-		properties.load(getServletContext().getResourceAsStream("/WEB-INF/configuration.properties"));
-
-		// Parse allowed users
-		Collection<String> allowedUsers = Arrays.asList(properties.getProperty("plotter.bill.users").split(","));
 
 		// Check user
 		if (request.getUserPrincipal() == null
