@@ -16,6 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import plotter.util.Configuration;
+
 import com.lowagie.text.pdf.PdfReader;
 
 public class PrintJob extends File {
@@ -85,7 +87,7 @@ public class PrintJob extends File {
 		ArrayList<String> command = new ArrayList<String>();
 
 		// Build command
-		command.add("/opt/local/bin/gs"); // TODO: Make this configurable
+		command.add(Configuration.getProperty("plotter.ghostscript.executable"));
 		command.add("-dQUIET");
 		command.add("-dNOPAUSE");
 		command.add("-dBATCH");
