@@ -1,6 +1,6 @@
 # PlotterWeb
 
-A small webinterface allowing PDF printing on plotters developed durint a university . Uses the TU Darmstadt Single Sign-On for authentication.
+A small webinterface allowing PDF printing on plotters developed during a university project. Uses the TU Darmstadt Single Sign-On for authentication.
 
 # Authors
 
