@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import plotter.pdf.PDFile;
+import plotter.pdf.PrintJob;
 
 /**
  * Servlet implementation class Home
@@ -46,7 +46,7 @@ public class Preview extends HttpServlet {
 
 		// Get jobs from session
 		@SuppressWarnings("unchecked")
-		Map<String, PDFile> jobs = (LinkedHashMap<String, PDFile>)
+		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>)
 			session.getAttribute(Process.sessionJobs);
 
 		if( jobs == null || ! jobs.containsKey(key)) {
@@ -56,7 +56,7 @@ public class Preview extends HttpServlet {
 			return;
 		}
 
-		PDFile job = jobs.get(key);
+		PrintJob job = jobs.get(key);
 
 		if(job.getNumberOfPages() <= num) {
 			// Image not found

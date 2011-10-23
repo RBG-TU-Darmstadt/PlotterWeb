@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 
-import plotter.pdf.PDFile;
+import plotter.pdf.PrintJob;
 import plotter.pdf.Prices;
 import plotter.storage.UserDAO;
 import plotter.entities.User;
@@ -99,11 +99,11 @@ public class Process extends HttpServlet {
 //		session.setAttribute(sessionPrincipal, principal);
 //		session.setAttribute(sessionUser, user);
 
-		Map<String, PDFile> jobs = (LinkedHashMap<String, PDFile>) session.getAttribute(sessionJobs);
+		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionJobs);
 
 		// Create job list
 		if(jobs == null) {
-			jobs = new LinkedHashMap<String, PDFile>();
+			jobs = new LinkedHashMap<String, PrintJob>();
 			session.setAttribute(sessionJobs, jobs);
 		}
 

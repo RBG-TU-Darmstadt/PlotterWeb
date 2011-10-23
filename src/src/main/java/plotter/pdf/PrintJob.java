@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import com.lowagie.text.pdf.PdfReader;
 
-public class PDFile extends File {
+public class PrintJob extends File {
 
 	private static final long serialVersionUID = 1578101753406396888L;
 
@@ -35,7 +35,7 @@ public class PDFile extends File {
 
 	List<File> thumbnails = new ArrayList<File>();
 
-	public PDFile(String filename, String originalFileName) throws IOException {
+	public PrintJob(String filename, String originalFileName) throws IOException {
 		super(filename);
 
 		this.filename = originalFileName;

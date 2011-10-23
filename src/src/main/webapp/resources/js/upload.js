@@ -82,7 +82,7 @@ upload = {
 		var self = this;
 		Manager.uploadFile(file, {
 			callback: function(json) {
-				var job = $.parseJSON(json);
+				var result = $.parseJSON(json);
 
 				// Stop activity indicator
 				$('.plotter-upload-progressbar').progressbar({
@@ -91,25 +91,25 @@ upload = {
 				// Set cleanup timer
 				setTimeout(self.cleanupUpload, 200);
 
-				if( ! job.success) {
+				if( ! result.success) {
 					// Error
-					if(job.error == "file-empty") {
+					if(result.error == "file-empty") {
 						alert("Bitte wählen sie eine PDF Datei aus!");
 					}
-					else if(job.error == "file-not-valid") {
+					else if(result.error == "file-not-valid") {
 						alert("Die Datei konnte nicht verarbeitet werden. Bitte wählen sie ein valides PDF aus!");
 					}
 				}
 				else {
 					// Populate options dialog
 					var dialog = $('#options-dialog');
-					dialog.find('#filename').text(job.pdf.name);
-					dialog.find('#pages').text(job.pdf.pages);
-					dialog.find('input[name=job-key]').val(job.key);
-					dialog.find('input[name=email]').val(job.mail);
+					dialog.find('#filename').text(result.job.name);
+					dialog.find('#pages').text(result.job.pages);
+					dialog.find('input[name=job-key]').val(result.key);
+					dialog.find('input[name=email]').val(result.mail);
 
 					// Preview images
-					$.each(job.images, function(i, image) {
+					$.each(result.images, function(i, image) {
 						var dom = $("<div class='plotter-preview-page'>" + 
 							"<img src='" + image + "'></img>" +
 							"<div class='plotter-preview-page-number'>" + (i + 1) + "</div>" +

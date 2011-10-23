@@ -33,7 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import plotter.pdf.FormatException;
-import plotter.pdf.PDFile;
+import plotter.pdf.PrintJob;
 import plotter.pdf.Prices;
 import plotter.servlet.Process;
 import plotter.storage.DocumentDAO;
@@ -165,13 +165,13 @@ public class Manager {
 			e.printStackTrace();
 		}
 
-		// Instantiate PDF
-		PDFile pdf;
+		// Create job
+		PrintJob job;
 		try {
-			pdf = new PDFile(tmp.getAbsolutePath(), file.getFilename());
+			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename());
 
 			// Generate thumbnails
-			pdf.generateThumbnails();
+			job.generateThumbnails();
 		} catch (IOException e) {
 			e.printStackTrace();
 
@@ -184,16 +184,16 @@ public class Manager {
 		String key = UUID.randomUUID().toString();
 
 		List<String> images = new ArrayList<String>();
-		for (int i = 0; i < pdf.getNumberOfPages(); i++) {
+		for (int i = 0; i < job.getNumberOfPages(); i++) {
 			images.add(request.getContextPath() + "/secure/preview/?key=" + key
 					+ "&num=" + i);
 		}
 
 		// Save to session
 		HttpSession session = request.getSession(true);
-		Map<String, PDFile> jobs = (LinkedHashMap<String, PDFile>) session
+		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionJobs);
-		jobs.put(key, pdf);
+		jobs.put(key, job);
 		session.setAttribute(Process.sessionJobs, jobs);
 
 		// Get mail
@@ -202,7 +202,7 @@ public class Manager {
 
 		// Create JSON answer
 		return new JSONObject().put("success", true).put("key", key)
-				.put("pdf", pdf.toJSON()).put("images", images)
+				.put("job", job.toJSON()).put("images", images)
 				.put("mail", mail).toString();
 	}
 
@@ -211,15 +211,15 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
-		Map<String, PDFile> jobs = (LinkedHashMap<String, PDFile>) session
+		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionJobs);
-		PDFile pdf = jobs.get(jobKey);
+		PrintJob job = jobs.get(jobKey);
 
 		// Calculate price
 		String formatedPrice = null;
 		try {
 			float price = Prices.getInstance().calculatePrice(
-					pdf.getNumberOfPages(), copies, format);
+					job.getNumberOfPages(), copies, format);
 			formatedPrice = String.format("%.2f", price);
 		} catch (FormatException e1) {
 			formatedPrice = "--";
@@ -235,9 +235,9 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
-		Map<String, PDFile> jobs = (LinkedHashMap<String, PDFile>) session
+		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionJobs);
-		PDFile pdf = jobs.get(jobKey);
+		PrintJob job = jobs.get(jobKey);
 
 		if (!Prices.getInstance().getPrices().containsKey(format)) {
 			// Invalid format
@@ -256,8 +256,8 @@ public class Manager {
 		}
 
 		// Set options
-		pdf.setPrintSize(format);
-		pdf.setCopies(copies);
+		job.setPrintSize(format);
+		job.setCopies(copies);
 
 		AttributePrincipal principal = (AttributePrincipal) session
 				.getAttribute(Process.sessionPrincipal);
@@ -272,21 +272,21 @@ public class Manager {
 		Float price = -1.0f;
 		try {
 			price = Prices.getInstance().calculatePrice(
-					pdf.getNumberOfPages(),
-					pdf.getCopies(),
-					pdf.getPrintSize());
+					job.getNumberOfPages(),
+					job.getCopies(),
+					job.getPrintSize());
 		} catch (FormatException e) {
 			System.out.println("Invalid format supplied for print");
 		}
 
-		Document doc = new Document(pdf.getFilename(), "", pdf.getPrintSize(),
-				pdf.getNumberOfPages() * pdf.getCopies(), pdf.getCopies(),
+		Document doc = new Document(job.getFilename(), "", job.getPrintSize(),
+				job.getNumberOfPages() * job.getCopies(), job.getCopies(),
 				price, user);
 		doc.setPrintDate(new Date());
 
 		// Print file
 		// TODO: Implement new printing functionality
-//		pdf.sendFileToPrinter();
+//		job.sendFileToPrinter();
 
 		// save document and scriptsession
 		sessionTracker.getActivePrintJobs().put(
