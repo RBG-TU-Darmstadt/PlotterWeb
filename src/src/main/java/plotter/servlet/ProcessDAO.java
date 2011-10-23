@@ -2,6 +2,9 @@ package plotter.servlet;
 
 import java.util.Map;
 
+/**
+ * Object to share information between the Process class and it's JSP page
+ */
 public class ProcessDAO {
 
 	private String firstName;
