@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import plotter.pdf.PrintJob;
 
 /**
- * Servlet implementation class Home
+ * Preview image servlet
  */
 public class Preview extends HttpServlet {
 
@@ -29,7 +29,6 @@ public class Preview extends HttpServlet {
 	 */
 	public Preview() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
