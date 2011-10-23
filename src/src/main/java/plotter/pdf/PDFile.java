@@ -23,7 +23,7 @@ public class PDFile extends File {
 	private static final long serialVersionUID = 1578101753406396888L;
 
 	/*
-	 * Define max. thumbnail dimensions 
+	 * Define max. thumbnail dimensions
 	 */
 	private final int MAX_HEIGHT = 120;
 	private final int MAX_WIDTH = 120;
@@ -47,7 +47,7 @@ public class PDFile extends File {
 	 * Use iText to retrieve the number of pages of the PDF
 	 * 
 	 * @return the number of pages
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private int getPageCount() throws IOException {
 		int pageCount = 0;
@@ -109,13 +109,16 @@ public class PDFile extends File {
 			String errorMessage = IOUtils.toString(proc.getErrorStream())
 					+ " - " + IOUtils.toString(proc.getInputStream());
 
-			throw new IOException("PDF could not be converted to images, message: " + errorMessage);
+			throw new IOException(
+					"PDF could not be converted to images, message: "
+							+ errorMessage);
 		}
 
 		// Retrieve images
 		List<Image> images = new ArrayList<Image>();
-		for(int i = 1; i <= this.getNumberOfPages(); i++) {
-			String imageFilename = tmp.getAbsolutePath().replace("%d", Integer.toString(i));
+		for (int i = 1; i <= this.getNumberOfPages(); i++) {
+			String imageFilename = tmp.getAbsolutePath().replace("%d",
+					Integer.toString(i));
 
 			images.add(ImageIO.read(new File(imageFilename)));
 		}
@@ -132,7 +135,7 @@ public class PDFile extends File {
 	 */
 	public void generateThumbnails() throws IOException {
 		List<Image> images = convertToImages(72);
-		
+
 		for (int i = 0; i < images.size(); i++) {
 			// Retrieve a temporary file
 			File tmp = File.createTempFile(
@@ -156,8 +159,8 @@ public class PDFile extends File {
 					height, BufferedImage.SCALE_SMOOTH);
 			BufferedImage scaledBufferedImage = new BufferedImage(width,
 					height, BufferedImage.TYPE_INT_RGB);
-			scaledBufferedImage.getGraphics().drawImage(scaledImage, 0, 0,
-					null);
+			scaledBufferedImage.getGraphics()
+					.drawImage(scaledImage, 0, 0, null);
 
 			// Write image
 			ImageIO.write(scaledBufferedImage, "png", tmp);
@@ -172,6 +175,7 @@ public class PDFile extends File {
 	public List<File> getThumbnails() {
 		return thumbnails;
 	}
+
 	public int getNumberOfPages() {
 		return numberOfPages;
 	}
