@@ -1,9 +1,6 @@
 package plotter.entities;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +25,6 @@ public class Document {
 	private User user;
 	private Integer pageCount;
 	private Integer copies;
-	private String hash;
 	private String format;
 	private Float price;
 
@@ -36,13 +32,12 @@ public class Document {
 	}
 
 	public Document(String filename, String desc, String format,
-			Integer pageCount, Integer copies, UUID hash, Float price, User u) {
+			Integer pageCount, Integer copies, Float price, User u) {
 		this.fileName = filename;
 		this.description = desc;
 		this.format = format;
 		this.pageCount = pageCount;
 		this.copies = copies;
-		this.setHash(hash);
 		this.price = price;
 		this.user = u;
 	}
@@ -93,15 +88,6 @@ public class Document {
 	@JoinColumn(name = "USER_ID")
 	public User getUser() {
 		return user;
-	}
-
-	public void setHash(UUID hash) {
-		this.hash = hash.toString();
-	}
-
-	@Column(name = "DOC_HASH")
-	public UUID getHash() {
-		return UUID.fromString(hash);
 	}
 
 	public void setFormat(String format) {

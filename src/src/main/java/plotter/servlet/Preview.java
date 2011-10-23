@@ -58,7 +58,7 @@ public class Preview extends HttpServlet {
 
 		PDFile job = jobs.get(key);
 
-		if(job.getMetadata().getNumberOfPages() <= num) {
+		if(job.getNumberOfPages() <= num) {
 			// Image not found
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 

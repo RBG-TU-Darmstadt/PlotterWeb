@@ -165,11 +165,8 @@ public class Manager {
 			e.printStackTrace();
 		}
 
-		// Generate key
-		String key = UUID.randomUUID().toString();
-
 		// Instantiate PDF
-		PDFile pdf = null;
+		PDFile pdf;
 		try {
 			pdf = new PDFile(tmp.getAbsolutePath(), file.getFilename());
 
@@ -183,11 +180,11 @@ public class Manager {
 					.put("error", "file-not-valid").toString();
 		}
 
-		// save the jobKey in Metadata object
-		pdf.getMetadata().setJobKey(key);
+		// Generate key to identify the job
+		String key = UUID.randomUUID().toString();
 
 		List<String> images = new ArrayList<String>();
-		for (int i = 0; i < pdf.getMetadata().getNumberOfPages(); i++) {
+		for (int i = 0; i < pdf.getNumberOfPages(); i++) {
 			images.add(request.getContextPath() + "/secure/preview/?key=" + key
 					+ "&num=" + i);
 		}
@@ -222,14 +219,14 @@ public class Manager {
 		String formatedPrice = null;
 		try {
 			float price = Prices.getInstance().calculatePrice(
-					pdf.getMetadata().getNumberOfPages(), copies, format);
+					pdf.getNumberOfPages(), copies, format);
 			formatedPrice = String.format("%.2f", price);
 		} catch (FormatException e1) {
 			formatedPrice = "--";
 		}
 
 		// Create JSON answer
-		return new JSONObject().put("key", pdf.getId())
+		return new JSONObject().put("key", jobKey)
 				.put("price", formatedPrice).toString();
 	}
 
@@ -259,8 +256,8 @@ public class Manager {
 		}
 
 		// Set options
-		pdf.getMetadata().setPrintSize(format);
-		pdf.getMetadata().setCopies(copies);
+		pdf.setPrintSize(format);
+		pdf.setCopies(copies);
 
 		AttributePrincipal principal = (AttributePrincipal) session
 				.getAttribute(Process.sessionPrincipal);
@@ -275,17 +272,16 @@ public class Manager {
 		Float price = -1.0f;
 		try {
 			price = Prices.getInstance().calculatePrice(
-					pdf.getMetadata().getNumberOfPages(),
-					pdf.getMetadata().getCopies(),
-					pdf.getMetadata().getPrintSize());
+					pdf.getNumberOfPages(),
+					pdf.getCopies(),
+					pdf.getPrintSize());
 		} catch (FormatException e) {
 			System.out.println("Invalid format supplied for print");
 		}
 
-		Document doc = new Document(pdf.getFilename(), "", pdf.getMetadata()
-				.getPrintSize(), pdf.getMetadata().getNumberOfPages()
-				* pdf.getMetadata().getCopies(), pdf.getMetadata().getCopies(),
-				pdf.getId(), price, user);
+		Document doc = new Document(pdf.getFilename(), "", pdf.getPrintSize(),
+				pdf.getNumberOfPages() * pdf.getCopies(), pdf.getCopies(),
+				price, user);
 		doc.setPrintDate(new Date());
 
 		// Print file

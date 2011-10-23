@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
@@ -23,12 +22,16 @@ public class PDFile extends File {
 
 	private static final long serialVersionUID = 1578101753406396888L;
 
-	private UUID id = UUID.randomUUID();
-
+	/*
+	 * Define max. thumbnail dimensions 
+	 */
 	private final int MAX_HEIGHT = 120;
 	private final int MAX_WIDTH = 120;
-	private Metadata meta;
+
 	private String filename;
+	private int numberOfPages;
+	private String printSize;
+	private int copies;
 
 	List<File> thumbnails = new ArrayList<File>();
 
@@ -37,9 +40,7 @@ public class PDFile extends File {
 
 		this.filename = originalFileName;
 
-		// set the Metadata
-		this.meta = new Metadata();
-		this.meta.setNumberOfPages(getPageCount());
+		this.setNumberOfPages(getPageCount());
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class PDFile extends File {
 
 		// Retrieve images
 		List<Image> images = new ArrayList<Image>();
-		for(int i = 1; i <= meta.getNumberOfPages(); i++) {
+		for(int i = 1; i <= this.getNumberOfPages(); i++) {
 			String imageFilename = tmp.getAbsolutePath().replace("%d", Integer.toString(i));
 
 			images.add(ImageIO.read(new File(imageFilename)));
@@ -164,22 +165,6 @@ public class PDFile extends File {
 		}
 	}
 
-	public UUID getId() {
-		return id;
-	}
-
-	public int getHeight() {
-		return MAX_HEIGHT;
-	}
-
-	public int getWidth() {
-		return MAX_WIDTH;
-	}
-
-	public Metadata getMetadata() {
-		return meta;
-	}
-
 	public String getFilename() {
 		return filename;
 	}
@@ -187,9 +172,32 @@ public class PDFile extends File {
 	public List<File> getThumbnails() {
 		return thumbnails;
 	}
+	public int getNumberOfPages() {
+		return numberOfPages;
+	}
+
+	public void setNumberOfPages(int numberOfPages) {
+		this.numberOfPages = numberOfPages;
+	}
+
+	public String getPrintSize() {
+		return printSize;
+	}
+
+	public void setPrintSize(String printSize) {
+		this.printSize = printSize;
+	}
+
+	public int getCopies() {
+		return copies;
+	}
+
+	public void setCopies(int copies) {
+		this.copies = copies;
+	}
 
 	public JSONObject toJSON() throws JSONException {
 		return new JSONObject().put("name", this.getFilename()).put("pages",
-				this.meta.getNumberOfPages());
+				this.getNumberOfPages());
 	}
 }
