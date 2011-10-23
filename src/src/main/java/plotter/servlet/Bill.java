@@ -14,7 +14,7 @@ import org.jasig.cas.client.authentication.AttributePrincipal;
 import plotter.util.Configuration;
 
 /**
- * Servlet implementation class Home
+ * Billing interface servlet
  */
 public class Bill extends HttpServlet {
 

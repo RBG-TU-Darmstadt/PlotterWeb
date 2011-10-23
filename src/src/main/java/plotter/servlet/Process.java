@@ -20,7 +20,7 @@ import plotter.storage.UserDAO;
 import plotter.entities.User;
 
 /**
- * Servlet implementation class Home
+ * Main interface servlet
  */
 public class Process extends HttpServlet {
 
@@ -35,7 +35,6 @@ public class Process extends HttpServlet {
 	 */
 	public Process() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
