@@ -147,8 +147,10 @@ public class Manager {
 			throws JSONException {
 		if (file.getSize() == 0) {
 			// File was empty
-			return new JSONObject().put("success", false)
-					.put("error", "file-empty").toString();
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "file-empty")
+				.toString();
 		}
 
 		// Save file
@@ -176,8 +178,10 @@ public class Manager {
 			e.printStackTrace();
 
 			// File not valid
-			return new JSONObject().put("success", false)
-					.put("error", "file-not-valid").toString();
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "file-not-valid")
+				.toString();
 		}
 
 		// Generate key to identify the job
@@ -201,9 +205,13 @@ public class Manager {
 				.getEmail();
 
 		// Create JSON answer
-		return new JSONObject().put("success", true).put("key", key)
-				.put("job", job.toJSON()).put("images", images)
-				.put("mail", mail).toString();
+		return new JSONObject()
+				.put("success", true)
+				.put("key", key)
+				.put("job", job.toJSON())
+				.put("images", images)
+				.put("mail", mail)
+			.toString();
 	}
 
 	@RemoteMethod
@@ -226,8 +234,10 @@ public class Manager {
 		}
 
 		// Create JSON answer
-		return new JSONObject().put("key", jobKey)
-				.put("price", formatedPrice).toString();
+		return new JSONObject()
+				.put("key", jobKey)
+				.put("price", formatedPrice)
+			.toString();
 	}
 
 	@RemoteMethod
@@ -241,18 +251,24 @@ public class Manager {
 
 		if (!Prices.getInstance().getPrices().containsKey(format)) {
 			// Invalid format
-			return new JSONObject().put("success", false)
-					.put("error", "format-not-valid").toString();
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "format-not-valid")
+				.toString();
 		}
 		if (copies < 1) {
 			// Invalid copies
-			return new JSONObject().put("success", false)
-					.put("error", "copies-not-valid").toString();
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "copies-not-valid")
+				.toString();
 		}
 		if (!EmailValidator.getInstance().isValid(mail)) {
 			// Invalid mail
-			return new JSONObject().put("success", false)
-					.put("error", "mail-not-valid").toString();
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "mail-not-valid")
+				.toString();
 		}
 
 		// Set options
@@ -297,7 +313,9 @@ public class Manager {
 		// Remove job from session
 		jobs.remove(jobKey);
 
-		return new JSONObject().put("success", true).toString();
+		return new JSONObject()
+				.put("success", true)
+			.toString();
 	}
 
 	/**
