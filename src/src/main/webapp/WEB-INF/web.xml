@@ -9,41 +9,41 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
+	<!-- Plotting interface -->
 	<servlet>
 		<servlet-name>secure</servlet-name>
 		<servlet-class>plotter.servlet.Process</servlet-class>
 	</servlet>
-
-	<servlet>
-		<servlet-name>secure/bill</servlet-name>
-		<servlet-class>plotter.servlet.Bill</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>secure/preview</servlet-name>
-		<servlet-class>plotter.servlet.Preview</servlet-class>
-	</servlet>
-
-	<!-- Other stuff -->
-
-	<listener>
-		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
-	</listener>
-
 	<servlet-mapping>
 		<servlet-name>secure</servlet-name>
 		<url-pattern>/secure/</url-pattern>
 	</servlet-mapping>
 
+	<!-- Billing interface -->
+	<servlet>
+		<servlet-name>secure/bill</servlet-name>
+		<servlet-class>plotter.servlet.Bill</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>secure/preview</servlet-name>
 		<url-pattern>/secure/preview/</url-pattern>
 	</servlet-mapping>
 
+	<!-- Preview images -->
+	<servlet>
+		<servlet-name>secure/preview</servlet-name>
+		<servlet-class>plotter.servlet.Preview</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>secure/bill</servlet-name>
 		<url-pattern>/secure/bill/</url-pattern>
 	</servlet-mapping>
+
+	<!-- Single Sign-On -->
+
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
 
 	<!-- Direct Web Remoting servlet -->
 	<servlet>
