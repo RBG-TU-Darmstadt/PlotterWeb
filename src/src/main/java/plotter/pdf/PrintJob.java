@@ -94,7 +94,7 @@ public class PrintJob extends File {
 		command.add("-dSAFER");
 		command.add("-r" + resolution);
 		command.add("-sDEVICE=png16m");
-		command.add("dTextAlphaBits=4");
+		command.add("-dTextAlphaBits=4");
 		command.add("-dGraphicsAlphaBits=4");
 		command.add("-sOutputFile=" + tmp.getAbsolutePath());
 		command.add(this.getAbsolutePath());
