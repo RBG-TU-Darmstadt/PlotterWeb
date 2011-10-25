@@ -15,11 +15,13 @@ import plotter.util.Configuration;
 
 import com.lowagie.text.pdf.PdfReader;
 
-public class PrintJob extends File {
-
-	private static final long serialVersionUID = 1578101753406396888L;
+/**
+ *
+ */
+public class PrintJob {
 
 	private String filename;
+	private File pdfFile;
 	private int numberOfPages;
 	private String printSize;
 	private int copies;
@@ -27,9 +29,8 @@ public class PrintJob extends File {
 	List<File> thumbnails = new ArrayList<File>();
 
 	public PrintJob(String filename, String originalFileName) throws IOException {
-		super(filename);
-
 		this.filename = originalFileName;
+		this.pdfFile = new File(filename);
 
 		this.setNumberOfPages(getPageCount());
 	}
@@ -47,7 +48,7 @@ public class PrintJob extends File {
 		PdfReader reader = null;
 
 		try {
-			reader = new PdfReader(new FileInputStream(this));
+			reader = new PdfReader(new FileInputStream(pdfFile));
 
 			pageCount = reader.getNumberOfPages();
 		} catch (Exception e) {
@@ -95,7 +96,7 @@ public class PrintJob extends File {
 			command.add("-dNORANGEPAGESIZE");
 		}
 		command.add("-sOutputFile=" + tmp.getAbsolutePath());
-		command.add(this.getAbsolutePath());
+		command.add(pdfFile.getAbsolutePath());
 
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		Process proc = processBuilder.start();
