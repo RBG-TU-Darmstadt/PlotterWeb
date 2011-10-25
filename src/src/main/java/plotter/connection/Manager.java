@@ -304,8 +304,7 @@ public class Manager {
 		doc.setPrintDate(new Date());
 
 		// Print file
-		// TODO: Implement new printing functionality
-//		job.sendFileToPrinter();
+		job.print();
 
 		// save document and scriptsession
 		sessionTracker.getActivePrintJobs().put(

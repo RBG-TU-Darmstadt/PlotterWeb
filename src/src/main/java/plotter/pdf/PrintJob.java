@@ -7,6 +7,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.MediaSizeName;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +150,57 @@ public class PrintJob {
 	 */
 	public void generateThumbnails() throws IOException {
 		thumbnails = convertToImages(100, "a10", false);
+	}
+	
+	/**
+	 * Prints this pdf file on local printer.
+	 * 
+	 * @throws IOException
+	 *             on error creating or reading rendered pages
+	 * @throws PrintException
+	 *             on error while printing
+	 */
+	public void print() throws IOException, PrintException {
+		MediaSizeName mediaSize = null;
+		if (this.printSize.equals("A0")) {
+			mediaSize = MediaSizeName.ISO_A0;
+		} else if (this.printSize.equals("A1")) {
+			mediaSize = MediaSizeName.ISO_A1;
+		} else if (this.printSize.equals("A2")) {
+			mediaSize = MediaSizeName.ISO_A2;
+		}
+
+		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
+		pras.add(new Copies(this.copies));
+		pras.add(mediaSize);
+
+		PrintService pss[] = PrintServiceLookup.lookupPrintServices(
+				DocFlavor.INPUT_STREAM.PNG, pras);
+
+		// select correct printer
+		PrintService printService = null;
+		for (PrintService ps : pss) {
+			if (ps.getName().contains(
+					Configuration.getProperty("plotter.device.name"))) {
+				printService = ps;
+				break;
+			}
+		}
+
+		// TODO: handle this exception correctly
+		if (printService == null)
+			throw new RuntimeException("No suitable printer found.");
+
+		DocPrintJob printJob = printService.createPrintJob();
+
+		List<File> renderedPages = convertToImages(300, this.printSize, true);
+
+		for (File f : renderedPages) {
+			FileInputStream fin = new FileInputStream(f);
+			Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.PNG, null);
+			printJob.print(doc, pras);
+			fin.close();
+		}
 	}
 
 	public String getFilename() {
