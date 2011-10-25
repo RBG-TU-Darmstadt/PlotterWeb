@@ -24,8 +24,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-integration-tomcat-v6</artifactId>
+			<artifactId>cas-client-integration-tomcat-v7</artifactId>
 			<version>3.2.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.tomcat</groupId>
+					<artifactId>tomcat-catalina</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+			<version>1.1</version>
 		</dependency>
 
 		<dependency>
