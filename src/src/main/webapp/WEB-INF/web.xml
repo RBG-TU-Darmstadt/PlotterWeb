@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
 	<display-name>PlotterWebInterface</display-name>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -47,8 +48,6 @@
 	<!-- Direct Web Remoting servlet -->
 	<servlet>
 		<servlet-name>dwr-invoker</servlet-name>
-		<display-name>DWRServlet </display-name>
-		<description>Direct Web Remoter Servlet</description>
 		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
 		<init-param>
 			<param-name>debug</param-name>
