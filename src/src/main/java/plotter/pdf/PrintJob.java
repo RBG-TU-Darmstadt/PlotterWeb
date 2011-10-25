@@ -1,6 +1,5 @@
 package plotter.pdf;
 
-import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
@@ -46,7 +45,7 @@ public class PrintJob {
 		this.filename = originalFileName;
 		this.pdfFile = new File(filename);
 
-		this.setNumberOfPages(getPageCount());
+		this.numberOfPages = getPageCount();
 	}
 
 	/**
@@ -173,16 +172,16 @@ public class PrintJob {
 			mediaSize = MediaSizeName.ISO_A2;
 		}
 
-		PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
-		pras.add(new Copies(this.copies));
-		pras.add(mediaSize);
+		PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
+		printAttributes.add(new Copies(this.copies));
+		printAttributes.add(mediaSize);
 
-		PrintService pss[] = PrintServiceLookup.lookupPrintServices(
-				DocFlavor.INPUT_STREAM.PNG, pras);
+		PrintService printServices[] = PrintServiceLookup.lookupPrintServices(
+				DocFlavor.INPUT_STREAM.PNG, printAttributes);
 
-		// select correct printer
+		// Select correct printer
 		PrintService printService = null;
-		for (PrintService ps : pss) {
+		for (PrintService ps : printServices) {
 			if (ps.getName().contains(
 					Configuration.getProperty("plotter.device.name"))) {
 				printService = ps;
@@ -197,18 +196,17 @@ public class PrintJob {
 
 		PrinterJob printerJob = PrinterJob.getPrinterJob();
 		printerJob.setPrintService(printService);
-		
+
 		List<File> renderedPages = convertToImages(300, this.printSize, true);
 		ImagePrintable imagePrintable = new ImagePrintable();
-		for (File f : renderedPages) {
-			FileInputStream fin = new FileInputStream(f);
-			BufferedImage image = ImageIO.read(fin);
-			imagePrintable.addImage(image);
-			fin.close();
+		for (File file : renderedPages) {
+			FileInputStream stream = new FileInputStream(file);
+			imagePrintable.addImage(ImageIO.read(stream));
+			stream.close();
 		}
-		
+
 		printerJob.setPrintable(imagePrintable);
-		printerJob.print(pras);
+		printerJob.print(printAttributes);
 	}
 
 	public String getFilename() {
@@ -221,10 +219,6 @@ public class PrintJob {
 
 	public int getNumberOfPages() {
 		return numberOfPages;
-	}
-
-	public void setNumberOfPages(int numberOfPages) {
-		this.numberOfPages = numberOfPages;
 	}
 
 	public String getPrintSize() {
