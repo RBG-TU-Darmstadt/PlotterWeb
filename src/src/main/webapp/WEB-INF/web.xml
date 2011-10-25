@@ -26,8 +26,7 @@
 	<!-- Other stuff -->
 
 	<listener>
-		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener
-		</listener-class>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
 	</listener>
 
 	<servlet-mapping>
@@ -75,8 +74,6 @@
 
 	<!-- Configuration initializer -->
 	<listener>
-		<listener-class>
-			plotter.servlet.InitializeContext
-		</listener-class>
+		<listener-class>plotter.servlet.InitializeContext</listener-class>
 	</listener>
 </web-app>
