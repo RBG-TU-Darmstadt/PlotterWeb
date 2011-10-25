@@ -1,5 +1,6 @@
 package plotter.connection;
 
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.print.PrintException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -304,7 +306,15 @@ public class Manager {
 		doc.setPrintDate(new Date());
 
 		// Print file
-		job.print();
+		try {
+			job.print();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (PrintException e) {
+			e.printStackTrace();
+		} catch (PrinterException e) {
+			e.printStackTrace();
+		}
 
 		// save document and scriptsession
 		sessionTracker.getActivePrintJobs().put(

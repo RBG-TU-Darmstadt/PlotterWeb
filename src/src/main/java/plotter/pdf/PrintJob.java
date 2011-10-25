@@ -1,5 +1,8 @@
 package plotter.pdf;
 
+import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,13 +10,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.print.Doc;
+import javax.imageio.ImageIO;
 import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
 import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
@@ -23,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import plotter.printing.ImagePrintable;
 import plotter.util.Configuration;
 
 import com.lowagie.text.pdf.PdfReader;
@@ -159,8 +161,9 @@ public class PrintJob {
 	 *             on error creating or reading rendered pages
 	 * @throws PrintException
 	 *             on error while printing
+	 * @throws PrinterException 
 	 */
-	public void print() throws IOException, PrintException {
+	public void print() throws IOException, PrintException, PrinterException {
 		MediaSizeName mediaSize = null;
 		if (this.printSize.equals("A0")) {
 			mediaSize = MediaSizeName.ISO_A0;
@@ -188,19 +191,24 @@ public class PrintJob {
 		}
 
 		// TODO: handle this exception correctly
-		if (printService == null)
+		if (printService == null) {
 			throw new RuntimeException("No suitable printer found.");
+		}
 
-		DocPrintJob printJob = printService.createPrintJob();
-
+		PrinterJob printerJob = PrinterJob.getPrinterJob();
+		printerJob.setPrintService(printService);
+		
 		List<File> renderedPages = convertToImages(300, this.printSize, true);
-
+		ImagePrintable imagePrintable = new ImagePrintable();
 		for (File f : renderedPages) {
 			FileInputStream fin = new FileInputStream(f);
-			Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.PNG, null);
-			printJob.print(doc, pras);
+			BufferedImage image = ImageIO.read(fin);
+			imagePrintable.addImage(image);
 			fin.close();
 		}
+		
+		printerJob.setPrintable(imagePrintable);
+		printerJob.print(pras);
 	}
 
 	public String getFilename() {
