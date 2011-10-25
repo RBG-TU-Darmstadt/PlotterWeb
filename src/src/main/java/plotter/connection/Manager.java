@@ -18,9 +18,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.EmailValidator;
-import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ScriptSessions;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
@@ -34,16 +31,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import plotter.pdf.FormatException;
-import plotter.pdf.PrintJob;
-import plotter.pdf.Prices;
-import plotter.servlet.Process;
-import plotter.storage.DocumentDAO;
-import plotter.storage.UserDAO;
 import plotter.entities.Document;
 import plotter.entities.User;
+import plotter.pdf.FormatException;
+import plotter.pdf.Prices;
+import plotter.pdf.PrintJob;
+import plotter.servlet.Process;
+import plotter.storage.DocumentDAO;
 import plotter.util.Export;
-import plotter.util.PlotterUtil;
 
 @RemoteProxy
 public class Manager {
@@ -68,66 +63,6 @@ public class Manager {
 		} catch (Exception e) {
 		}
 	}
-
-//	public void onMessage(final Message message) {
-//		try {
-//			if (message instanceof TextMessage) {
-//				String text = ((TextMessage) message).getText();
-//				// ScriptSessions.addFunctionCall("receiveMessage",
-//				// text);
-//				for (String jobKey : sessionTracker.getActivePrintJobs()
-//						.keySet()) {
-//					if (jobKey.equals(text)) {
-//
-//						Document doc = sessionTracker.getActivePrintJobs()
-//								.get(jobKey).getDocument();
-//						ScriptSession session = sessionTracker
-//								.getActivePrintJobs().get(jobKey)
-//								.getScriptSession();
-//
-//						// store in DB
-//						DocumentDAO.create(doc);
-//						UserDAO.update(doc.getUser());
-//
-//						// Send confimation e-mail
-//						PlotterUtil.sendMail(doc);
-//
-//						session.addScript(new ScriptBuffer().appendCall(
-//								"upload.receiveJobCallback", doc.toJSON()
-//										.toString()));
-//
-//						sessionTracker.getActivePrintJobs().remove(jobKey);
-//					}
-//				}
-//			}
-//		} catch (Exception e) {
-//			ScriptSessions.addFunctionCall("alert",
-//					new Date() + ": " + e.toString());
-//		}
-//	}
-//
-//	public boolean sendFile(PDFile pdfFile) {
-//		BlobMessage message;
-//		ObjectMessage metaMessage;
-//		try {
-//			message = this.sessionTracker.getSession().createBlobMessage(
-//					pdfFile);
-//			sessionTracker.getProducer().send(message);
-//
-//			metaMessage = sessionTracker.getSession().createObjectMessage(
-//					pdfFile.getMetadata());
-//			sessionTracker.getProducer().send(metaMessage);
-//		} catch (JMSException e) {
-//			e.printStackTrace();
-//			return false;
-//		}
-//		return true;
-//	}
-//
-//	@Override
-//	public void onException(JMSException arg0) {
-//		// TODO Auto-generated method stub
-//	}
 
 	@RemoteMethod
 	public String getJobs(HttpServletRequest request) throws JSONException {
