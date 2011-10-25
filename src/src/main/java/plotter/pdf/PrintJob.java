@@ -146,7 +146,7 @@ public class PrintJob {
 	}
 
 	/**
-	 * Generate 100dpi thumbnails (results in 101x146px)
+	 * Generate 100dpi Din A10 thumbnails (results in 101x146px)
 	 * 
 	 * @throws IOException
 	 */
