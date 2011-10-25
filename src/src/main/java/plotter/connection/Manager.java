@@ -20,7 +20,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.EmailValidator;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
-import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteMethod;
 import org.directwebremoting.annotations.RemoteProxy;
 import org.directwebremoting.dwrp.CommonsFileUpload;
@@ -43,12 +42,9 @@ import plotter.util.Export;
 @RemoteProxy
 public class Manager {
 
-	private SessionTracker sessionTracker;
 	protected List<ServerContext> serverContextList = null;
 
-	public Manager() {
-		sessionTracker = SessionTracker.getInstance(this);
-	}
+	public Manager() {}
 
 	@RemoteMethod
 	public void register() {
@@ -250,12 +246,6 @@ public class Manager {
 		} catch (PrinterException e) {
 			e.printStackTrace();
 		}
-
-		// save document and scriptsession
-		sessionTracker.getActivePrintJobs().put(
-				jobKey,
-				new DocumentSessionTuple(doc, WebContextFactory.get()
-						.getScriptSession()));
 
 		// Remove job from session
 		jobs.remove(jobKey);
