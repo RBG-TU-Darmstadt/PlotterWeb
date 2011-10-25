@@ -65,7 +65,7 @@ public class PrintJob extends File {
 	 * Convert PDF to images
 	 * 
 	 * @param resolution
-	 *            the resolution in dpo
+	 *            the resolution in dpi
 	 * @param paperSize
 	 *            the paper size (e.g. a2, a4, a10...)
 	 * @param portrait
@@ -85,10 +85,10 @@ public class PrintJob extends File {
 		command.add("-dNOPAUSE");
 		command.add("-dBATCH");
 		command.add("-dSAFER");
-		command.add("-r" + resolution);
 		command.add("-sDEVICE=png16m");
 		command.add("-dTextAlphaBits=4");
 		command.add("-dGraphicsAlphaBits=4");
+		command.add("-r" + resolution);
 		command.add("-dPDFFitPage");
 		command.add("-sPAPERSIZE=" + paperSize);
 		if (portrait) {
