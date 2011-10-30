@@ -26,7 +26,7 @@ public class Process extends HttpServlet {
 
 	private static final long serialVersionUID = 9194502702273320379L;
 
-	public final static String sessionJobs = "plotterJobs";
+	public final static String sessionTempJobs = "plotterJobs";
 	public final static String sessionUser = "plotterUser";
 	public final static String sessionPrincipal = "plotterPrincipal";
 
@@ -98,12 +98,12 @@ public class Process extends HttpServlet {
 //		session.setAttribute(sessionPrincipal, principal);
 //		session.setAttribute(sessionUser, user);
 
-		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionJobs);
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionTempJobs);
 
-		// Create job list
-		if(jobs == null) {
-			jobs = new LinkedHashMap<String, PrintJob>();
-			session.setAttribute(sessionJobs, jobs);
+		// Create temporary job storage
+		if(tempJobs == null) {
+			tempJobs = new LinkedHashMap<String, PrintJob>();
+			session.setAttribute(sessionTempJobs, tempJobs);
 		}
 
 		// Hand over infos to page

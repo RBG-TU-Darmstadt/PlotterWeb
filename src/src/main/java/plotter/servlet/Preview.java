@@ -45,17 +45,17 @@ public class Preview extends HttpServlet {
 
 		// Get jobs from session
 		@SuppressWarnings("unchecked")
-		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>)
-			session.getAttribute(Process.sessionJobs);
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>)
+			session.getAttribute(Process.sessionTempJobs);
 
-		if (jobs == null || ! jobs.containsKey(key)) {
+		if (tempJobs == null || ! tempJobs.containsKey(key)) {
 			// Job not found
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
 			return;
 		}
 
-		PrintJob job = jobs.get(key);
+		PrintJob job = tempJobs.get(key);
 
 		if(job.getNumberOfPages() <= num) {
 			// Image not found

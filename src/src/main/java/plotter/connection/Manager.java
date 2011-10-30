@@ -130,10 +130,10 @@ public class Manager {
 
 		// Save to session
 		HttpSession session = request.getSession(true);
-		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
-				.getAttribute(Process.sessionJobs);
-		jobs.put(key, job);
-		session.setAttribute(Process.sessionJobs, jobs);
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
+				.getAttribute(Process.sessionTempJobs);
+		tempJobs.put(key, job);
+		session.setAttribute(Process.sessionTempJobs, tempJobs);
 
 		// Get mail
 		String mail = ((User) session.getAttribute(Process.sessionUser))
@@ -154,9 +154,9 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
-		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
-				.getAttribute(Process.sessionJobs);
-		PrintJob job = jobs.get(jobKey);
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
+				.getAttribute(Process.sessionTempJobs);
+		PrintJob job = tempJobs.get(jobKey);
 
 		// Calculate price by updating job
 		try {
@@ -180,9 +180,9 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
-		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>) session
-				.getAttribute(Process.sessionJobs);
-		PrintJob job = jobs.get(jobKey);
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
+				.getAttribute(Process.sessionTempJobs);
+		PrintJob job = tempJobs.get(jobKey);
 
 		/*
 		 * Validate input
@@ -234,7 +234,7 @@ public class Manager {
 		}
 
 		// Remove job from session
-		jobs.remove(jobKey);
+		tempJobs.remove(jobKey);
 
 		return new JSONObject()
 				.put("success", true)
