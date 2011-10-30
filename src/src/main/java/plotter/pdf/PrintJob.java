@@ -1,8 +1,5 @@
 package plotter.pdf;
 
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterIOException;
-import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,12 +10,17 @@ import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.print.Doc;
 import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.JobName;
 import javax.print.attribute.standard.MediaSizeName;
 
 import org.apache.commons.io.IOUtils;
@@ -162,12 +164,12 @@ public class PrintJob implements Serializable {
 	/**
 	 * Prints this pdf file on local printer.
 	 * 
-	 * @throws PrinterException 
-	 *             on error while printing
-	 * @throws PrinterIOException
+	 * @throws IOException
 	 *             on error creating or reading rendered pages
+	 * @throws PrintException 
+	 *             on error while printing
 	 */
-	public void print() throws PrinterException {
+	public void print() throws IOException, PrintException {
 		MediaSizeName mediaSize = null;
 		if (this.printSize.equals("A0")) {
 			mediaSize = MediaSizeName.ISO_A0;
@@ -179,12 +181,14 @@ public class PrintJob implements Serializable {
 		
 		mediaSize = MediaSizeName.ISO_A4;
 
+		DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
+
 		PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
 		printAttributes.add(new Copies(this.copies));
 		printAttributes.add(mediaSize);
 
 		PrintService printServices[] = PrintServiceLookup.lookupPrintServices(
-				DocFlavor.INPUT_STREAM.PNG, printAttributes);
+				flavor, printAttributes);
 
 		// Select correct printer
 		PrintService printService = null;
@@ -197,27 +201,24 @@ public class PrintJob implements Serializable {
 		}
 
 		if (printService == null) {
-			throw new PrinterException("No suitable printer found.");
+			throw new PrintException("No suitable printer found.");
 		}
 
-		PrinterJob printerJob = PrinterJob.getPrinterJob();
-		printerJob.setPrintService(printService);
-		printerJob.setJobName("PlotterWeb: " + getFilename());
+		// Do not set this before looking up printers
+		printAttributes.add(new JobName("PlotterWeb: " + getFilename(), null));
+
+		DocPrintJob printJob = printService.createPrintJob();
 
 		ImagePrintable imagePrintable = new ImagePrintable();
-		try {
-			List<File>  renderedPages = convertToImages(300, this.printSize, true);
-			for (File file : renderedPages) {
-				FileInputStream stream = new FileInputStream(file);
-				imagePrintable.addImage(ImageIO.read(stream));
-				stream.close();
-			}
-		} catch (IOException e) {
-			throw new PrinterIOException(e);
+		List<File>  renderedPages = convertToImages(300, this.printSize, true);
+		for (File file : renderedPages) {
+			FileInputStream stream = new FileInputStream(file);
+			imagePrintable.addImage(ImageIO.read(stream));
+			stream.close();
 		}
 
-		printerJob.setPrintable(imagePrintable);
-		printerJob.print(printAttributes);
+		Doc doc = new SimpleDoc(imagePrintable, flavor, null);
+		printJob.print(doc, printAttributes);
 
 		printDate = new Date();
 	}

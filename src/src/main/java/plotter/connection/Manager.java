@@ -265,8 +265,11 @@ public class Manager {
 				// Add to pending jobs list
 				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
 				jobs.add(job);
-			} catch (PrinterException e) {
+			} catch (PrintException e) {
 				// TODO Send message to webinterface about failed print job
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
