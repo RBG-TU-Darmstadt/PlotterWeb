@@ -38,7 +38,6 @@ public class PrintJob {
 	private String printSize;
 	private int copies;
 
-	private float price;
 	private float pricePerPage;
 	List<File> thumbnails = new ArrayList<File>();
 
