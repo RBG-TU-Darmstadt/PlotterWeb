@@ -188,9 +188,8 @@ public class PrintJob {
 			}
 		}
 
-		// TODO: handle this exception correctly
 		if (printService == null) {
-			throw new RuntimeException("No suitable printer found.");
+			throw new PrinterException("No suitable printer found.");
 		}
 
 		PrinterJob printerJob = PrinterJob.getPrinterJob();
