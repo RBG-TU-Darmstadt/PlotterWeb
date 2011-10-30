@@ -133,7 +133,6 @@ public class Manager {
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionTempJobs);
 		tempJobs.put(key, job);
-		session.setAttribute(Process.sessionTempJobs, tempJobs);
 
 		// Get mail
 		String mail = ((User) session.getAttribute(Process.sessionUser))
