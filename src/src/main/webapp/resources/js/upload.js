@@ -187,11 +187,17 @@ upload = {
 
 		var self = this;
 		Manager.calculatePrice(key, size, copies, function(json) {
-			var job = $.parseJSON(json);
+			var result = $.parseJSON(json);
 
-			// Populate price
-			var dialog = $('#options-dialog');
-			dialog.find('#price').text(job.price);
+			if (result.success) {
+				// Populate price
+				var dialog = $('#options-dialog');
+				dialog.find('#price').text(result.price);
+			} else {
+				$('#price').text('--');
+
+				alert("Preisberechnung fehlgeschlagen.");
+			}
 		});
 	},
 

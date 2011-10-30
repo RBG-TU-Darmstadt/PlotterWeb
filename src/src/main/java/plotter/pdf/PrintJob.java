@@ -38,6 +38,8 @@ public class PrintJob {
 	private String printSize;
 	private int copies;
 
+	private float price;
+	private float pricePerPage;
 	List<File> thumbnails = new ArrayList<File>();
 
 	public PrintJob(String filename, String originalFileName) throws IOException {
@@ -223,16 +225,26 @@ public class PrintJob {
 		return printSize;
 	}
 
-	public void setPrintSize(String printSize) {
+	public void setPrintSize(String printSize) throws FormatException {
 		this.printSize = printSize;
+
+		pricePerPage = Prices.getInstance().getPrice(this.getPrintSize());
 	}
 
 	public int getCopies() {
 		return copies;
 	}
 
-	public void setCopies(int copies) {
+	public void setCopies(int copies) throws CopiesException {
+		if (copies < 1) {
+			throw new CopiesException("Copies must be greater then zero.");
+		}
+
 		this.copies = copies;
+	}
+
+	public float getPrice() {
+		return pricePerPage * getCopies() * getNumberOfPages();
 	}
 
 	public JSONObject toJSON() throws JSONException {

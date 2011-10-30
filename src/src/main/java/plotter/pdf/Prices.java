@@ -30,11 +30,12 @@ public class Prices {
 		return prices;
 	}
 
-	public float calculatePrice(int pages, int copies, String format) throws FormatException {
-		if( ! prices.containsKey(format))
-			throw new FormatException();
+	public float getPrice(String format) throws FormatException {
+		if( ! prices.containsKey(format)) {
+			throw new FormatException("Format '" + format + "' is not configured.");
+		}
 
-		return prices.get(format) * pages * copies;
+		return prices.get(format);
 	}
 
 }

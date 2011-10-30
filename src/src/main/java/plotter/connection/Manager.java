@@ -32,9 +32,11 @@ import org.json.JSONObject;
 
 import plotter.entities.Document;
 import plotter.entities.User;
+import plotter.pdf.CopiesException;
 import plotter.pdf.FormatException;
 import plotter.pdf.Prices;
 import plotter.pdf.PrintJob;
+import plotter.pdf.PrintJobException;
 import plotter.servlet.Process;
 import plotter.storage.DocumentDAO;
 import plotter.util.Export;
@@ -156,20 +158,20 @@ public class Manager {
 				.getAttribute(Process.sessionJobs);
 		PrintJob job = jobs.get(jobKey);
 
-		// Calculate price
-		String formatedPrice = null;
+		// Calculate price by updating job
 		try {
-			float price = Prices.getInstance().calculatePrice(
-					job.getNumberOfPages(), copies, format);
-			formatedPrice = String.format("%.2f", price);
-		} catch (FormatException e1) {
-			formatedPrice = "--";
+			job.setPrintSize(format);
+			job.setCopies(copies);
+		} catch (PrintJobException e) {
+			return new JSONObject()
+					.put("success", false)
+				.toString();
 		}
 
 		// Create JSON answer
 		return new JSONObject()
-				.put("key", jobKey)
-				.put("price", formatedPrice)
+				.put("success", true)
+				.put("price", String.format("%.2f", job.getPrice()))
 			.toString();
 	}
 
@@ -185,14 +187,20 @@ public class Manager {
 		/*
 		 * Validate input
 		 */
-		if ( ! Prices.getInstance().getPrices().containsKey(format)) {
+		try {
+			// Set format
+			job.setPrintSize(format);
+		} catch (FormatException e1) {
 			// Invalid format
 			return new JSONObject()
 					.put("success", false)
 					.put("error", "format-not-valid")
 				.toString();
 		}
-		if (copies < 1) {
+		try {
+			// Set copies
+			job.setCopies(copies);
+		} catch (CopiesException e1) {
 			// Invalid copies
 			return new JSONObject()
 					.put("success", false)
@@ -207,10 +215,6 @@ public class Manager {
 				.toString();
 		}
 
-		// Set options
-		job.setPrintSize(format);
-		job.setCopies(copies);
-
 		AttributePrincipal principal = (AttributePrincipal) session
 				.getAttribute(Process.sessionPrincipal);
 		User user = (User) session.getAttribute(Process.sessionUser);
@@ -219,17 +223,6 @@ public class Manager {
 		user.setEmail(mail);
 		user.setFirstName((String) principal.getAttributes().get("givenName"));
 		user.setLastName((String) principal.getAttributes().get("surname"));
-
-		// Calculate price
-		Float price = -1.0f;
-		try {
-			price = Prices.getInstance().calculatePrice(
-					job.getNumberOfPages(),
-					job.getCopies(),
-					job.getPrintSize());
-		} catch (FormatException e) {
-			System.out.println("Invalid format supplied for print");
-		}
 
 		// Print file
 		try {

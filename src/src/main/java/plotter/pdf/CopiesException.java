@@ -1,10 +1,10 @@
 package plotter.pdf;
 
-public class FormatException extends PrintJobException {
+public class CopiesException extends PrintJobException {
 
 	private static final long serialVersionUID = -7756239264799318306L;
 
-	public FormatException(String message) {
+	public CopiesException(String message) {
 		super(message);
 	}
 
