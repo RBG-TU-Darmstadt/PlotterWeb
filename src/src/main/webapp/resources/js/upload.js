@@ -96,6 +96,9 @@ upload = {
 					if(result.error == "file-empty") {
 						alert("Bitte wählen sie eine PDF Datei aus!");
 					}
+					else if(result.error == "upload-failed") {
+						alert("Es ist ein Fehler beim Upload aufgetreten. Bitte versuchen sie es erneut!");
+					}
 					else if(result.error == "file-not-valid") {
 						alert("Die Datei konnte nicht verarbeitet werden. Bitte wählen sie ein valides PDF aus!");
 					}

@@ -88,7 +88,7 @@ public class Manager {
 		}
 
 		// Save file
-		File tmp = null;
+		File tmp;
 		try {
 			tmp = File.createTempFile("plotter", ".pdf");
 			tmp.deleteOnExit();
@@ -97,8 +97,13 @@ public class Manager {
 			file.getOutputStreamLoader().load(stream);
 			stream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+
+			// Upload failed
+			return new JSONObject()
+					.put("success", false)
+					.put("error", "upload-failed")
+				.toString();
 		}
 
 		// Create temporary job
