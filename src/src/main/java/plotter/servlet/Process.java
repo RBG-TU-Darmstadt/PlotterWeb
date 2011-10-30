@@ -1,8 +1,10 @@
 package plotter.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -26,7 +28,11 @@ public class Process extends HttpServlet {
 
 	private static final long serialVersionUID = 9194502702273320379L;
 
-	public final static String sessionTempJobs = "plotterJobs";
+	/*
+	 * Globals names for session variables
+	 */
+	public final static String sessionJobs = "plotterJobs";
+	public final static String sessionTempJobs = "plotterTempJobs";
 	public final static String sessionUser = "plotterUser";
 	public final static String sessionPrincipal = "plotterPrincipal";
 
@@ -98,12 +104,18 @@ public class Process extends HttpServlet {
 //		session.setAttribute(sessionPrincipal, principal);
 //		session.setAttribute(sessionUser, user);
 
-		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionTempJobs);
 
 		// Create temporary job storage
+		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionTempJobs);
 		if(tempJobs == null) {
 			tempJobs = new LinkedHashMap<String, PrintJob>();
 			session.setAttribute(sessionTempJobs, tempJobs);
+		}
+		// Create print job storage
+		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(sessionJobs);
+		if(jobs == null) {
+			jobs = new ArrayList<PrintJob>();
+			session.setAttribute(sessionJobs, jobs);
 		}
 
 		// Hand over infos to page
