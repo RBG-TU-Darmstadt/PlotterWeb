@@ -1,6 +1,7 @@
 package plotter.pdf;
 
 import java.awt.print.PrinterException;
+import java.awt.print.PrinterIOException;
 import java.awt.print.PrinterJob;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -40,6 +42,7 @@ public class PrintJob implements Serializable {
 	private int numberOfPages;
 	private String printSize;
 	private int copies;
+	private Date printDate;
 
 	private float pricePerPage;
 	List<File> thumbnails = new ArrayList<File>();
@@ -173,6 +176,8 @@ public class PrintJob implements Serializable {
 		} else if (this.printSize.equals("A2")) {
 			mediaSize = MediaSizeName.ISO_A2;
 		}
+		
+		mediaSize = MediaSizeName.ISO_A4;
 
 		PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
 		printAttributes.add(new Copies(this.copies));
@@ -212,6 +217,8 @@ public class PrintJob implements Serializable {
 
 		printerJob.setPrintable(imagePrintable);
 		printerJob.print(printAttributes);
+
+		printDate = new Date();
 	}
 
 	public String getFilename() {
@@ -252,9 +259,24 @@ public class PrintJob implements Serializable {
 		return pricePerPage * getCopies() * getNumberOfPages();
 	}
 
+	public Date getPrintDate() {
+		return printDate;
+	}
+
 	public JSONObject toJSON() throws JSONException {
-		return new JSONObject().put("name", this.getFilename()).put("pages",
-				this.getNumberOfPages());
+		JSONObject object = new JSONObject();
+		object.put("filename", this.getFilename());
+		object.put("pages", this.getNumberOfPages());
+		object.put("copies", this.getCopies());
+		object.put("format", this.getPrintSize());
+		object.put("price", this.getPrice());
+
+		if (this.getPrintDate() != null) {
+			object.put("date", this.getPrintDate().getTime());
+			object.put("status", "complete");
+		}
+
+		return object;
 	}
 
 }

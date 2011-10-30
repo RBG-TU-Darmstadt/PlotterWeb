@@ -65,12 +65,20 @@ public class Manager {
 	public String getJobs(HttpServletRequest request) throws JSONException {
 		HttpSession session = request.getSession(true);
 		User user = (User) session.getAttribute(Process.sessionUser);
-		List<Document> documents = DocumentDAO
-				.getLastJobsFromUser(user.getId());
 
 		JSONArray json = new JSONArray();
+
+		// Add completed jobs
+		List<Document> documents = DocumentDAO
+				.getLastJobsFromUser(user.getId());
 		for (Document document : documents) {
 			json.put(document.toJSON());
+		}
+
+		// Add pending jobs
+		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
+		for (PrintJob job : jobs) {
+			json.put(job.toJSON());
 		}
 
 		return json.toString();
@@ -253,6 +261,10 @@ public class Manager {
 		public void run() {
 			try {
 				job.print();
+
+				// Add to pending jobs list
+				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
+				jobs.add(job);
 			} catch (PrinterException e) {
 				// TODO Send message to webinterface about failed print job
 				e.printStackTrace();

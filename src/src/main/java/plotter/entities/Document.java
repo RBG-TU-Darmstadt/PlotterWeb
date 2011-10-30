@@ -146,6 +146,7 @@ public class Document {
 		object.put("format", this.getFormat());
 		object.put("date", this.getPrintDate().getTime());
 		object.put("price", this.getPrice());
+		object.put("status", "complete");
 
 		if(includeUser) {
 			object.put("username", this.getUser().getFirstName() + " " + this.getUser().getLastName());

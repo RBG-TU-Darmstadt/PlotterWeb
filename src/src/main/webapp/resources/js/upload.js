@@ -106,7 +106,7 @@ upload = {
 				else {
 					// Populate options dialog
 					var dialog = $('#options-dialog');
-					dialog.find('#filename').text(result.job.name);
+					dialog.find('#filename').text(result.job.filename);
 					dialog.find('#pages').text(result.job.pages);
 					dialog.find('input[name=job-key]').val(result.key);
 					dialog.find('input[name=email]').val(result.mail);
