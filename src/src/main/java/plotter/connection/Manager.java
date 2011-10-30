@@ -231,11 +231,6 @@ public class Manager {
 			System.out.println("Invalid format supplied for print");
 		}
 
-		Document doc = new Document(job.getFilename(), "", job.getPrintSize(),
-				job.getNumberOfPages() * job.getCopies(), job.getCopies(),
-				price, user);
-		doc.setPrintDate(new Date());
-
 		// Print file
 		try {
 			job.print();
