@@ -263,8 +263,8 @@ upload = {
 
 				dom.fadeIn(1600);
 
-				// 1 minute timeout when the PlotterApplication does not answer
-				self.timeoutCallback = setTimeout(self.receiveJobTimeout, 60*1000);
+				// 3 minute timeout when the PlotterApplication does not answer
+				self.timeoutCallback = setTimeout(self.receiveJobTimeout, 3*60*1000);
 			}
 		});
 	},
