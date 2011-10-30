@@ -29,7 +29,7 @@ public class Process extends HttpServlet {
 	public final static String sessionJobs = "plotterJobs";
 	public final static String sessionUser = "plotterUser";
 	public final static String sessionPrincipal = "plotterPrincipal";
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
