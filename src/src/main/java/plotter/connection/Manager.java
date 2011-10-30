@@ -34,7 +34,6 @@ import plotter.entities.Document;
 import plotter.entities.User;
 import plotter.pdf.CopiesException;
 import plotter.pdf.FormatException;
-import plotter.pdf.Prices;
 import plotter.pdf.PrintJob;
 import plotter.pdf.PrintJobException;
 import plotter.servlet.Process;

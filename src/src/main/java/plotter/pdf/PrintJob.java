@@ -253,4 +253,5 @@ public class PrintJob {
 		return new JSONObject().put("name", this.getFilename()).put("pages",
 				this.getNumberOfPages());
 	}
+
 }
