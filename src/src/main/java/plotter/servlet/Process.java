@@ -104,7 +104,6 @@ public class Process extends HttpServlet {
 //		session.setAttribute(sessionPrincipal, principal);
 //		session.setAttribute(sessionUser, user);
 
-
 		// Create temporary job storage
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionTempJobs);
 		if(tempJobs == null) {
