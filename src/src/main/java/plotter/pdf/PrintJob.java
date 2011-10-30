@@ -208,6 +208,7 @@ public class PrintJob implements Serializable {
 		printAttributes.add(new JobName("PlotterWeb: " + getFilename(), null));
 
 		DocPrintJob printJob = printService.createPrintJob();
+		printJob.addPrintJobListener(new JobListener(this));
 
 		ImagePrintable imagePrintable = new ImagePrintable();
 		List<File>  renderedPages = convertToImages(300, this.printSize, true);
