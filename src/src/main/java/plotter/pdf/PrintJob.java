@@ -202,6 +202,7 @@ public class PrintJob implements Serializable {
 
 		PrinterJob printerJob = PrinterJob.getPrinterJob();
 		printerJob.setPrintService(printService);
+		printerJob.setJobName("PlotterWeb: " + getFilename());
 
 		ImagePrintable imagePrintable = new ImagePrintable();
 		try {
