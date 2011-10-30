@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.print.DocFlavor;
-import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -158,11 +157,10 @@ public class PrintJob {
 	 * 
 	 * @throws IOException
 	 *             on error creating or reading rendered pages
-	 * @throws PrintException
-	 *             on error while printing
 	 * @throws PrinterException 
+	 *             on error while printing
 	 */
-	public void print() throws IOException, PrintException, PrinterException {
+	public void print() throws IOException, PrinterException {
 		MediaSizeName mediaSize = null;
 		if (this.printSize.equals("A0")) {
 			mediaSize = MediaSizeName.ISO_A0;

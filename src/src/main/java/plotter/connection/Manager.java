@@ -241,8 +241,6 @@ public class Manager {
 			job.print();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (PrintException e) {
-			e.printStackTrace();
 		} catch (PrinterException e) {
 			e.printStackTrace();
 		}
