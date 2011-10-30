@@ -48,7 +48,7 @@ public class Preview extends HttpServlet {
 		Map<String, PrintJob> jobs = (LinkedHashMap<String, PrintJob>)
 			session.getAttribute(Process.sessionJobs);
 
-		if( jobs == null || ! jobs.containsKey(key)) {
+		if (jobs == null || ! jobs.containsKey(key)) {
 			// Job not found
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
