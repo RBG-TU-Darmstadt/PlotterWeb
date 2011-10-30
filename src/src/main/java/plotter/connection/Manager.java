@@ -102,7 +102,7 @@ public class Manager {
 			e.printStackTrace();
 		}
 
-		// Create job
+		// Create temporary job
 		PrintJob job;
 		try {
 			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename());
@@ -223,21 +223,38 @@ public class Manager {
 		user.setFirstName((String) principal.getAttributes().get("givenName"));
 		user.setLastName((String) principal.getAttributes().get("surname"));
 
-		// Print file
-		try {
-			job.print();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (PrinterException e) {
-			e.printStackTrace();
-		}
+		// Print file in background thread
+		Thread printThread = new Thread(new PrintThread(session, job));
+		printThread.start();
 
-		// Remove job from session
+		// Remove temporary job from session
 		tempJobs.remove(jobKey);
 
 		return new JSONObject()
 				.put("success", true)
 			.toString();
+	}
+
+	class PrintThread implements Runnable {
+
+		HttpSession session;
+		PrintJob job;
+
+		public PrintThread(HttpSession session, PrintJob job) {
+			this.session = session;
+			this.job = job;
+		}
+
+		@Override
+		public void run() {
+			try {
+				job.print();
+			} catch (PrinterException e) {
+				// TODO Send message to webinterface about failed print job
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	/**

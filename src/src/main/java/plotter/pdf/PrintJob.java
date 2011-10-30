@@ -156,12 +156,12 @@ public class PrintJob {
 	/**
 	 * Prints this pdf file on local printer.
 	 * 
-	 * @throws IOException
-	 *             on error creating or reading rendered pages
 	 * @throws PrinterException 
 	 *             on error while printing
+	 * @throws PrinterIOException
+	 *             on error creating or reading rendered pages
 	 */
-	public void print() throws IOException, PrinterException {
+	public void print() throws PrinterException {
 		MediaSizeName mediaSize = null;
 		if (this.printSize.equals("A0")) {
 			mediaSize = MediaSizeName.ISO_A0;
@@ -196,12 +196,16 @@ public class PrintJob {
 		PrinterJob printerJob = PrinterJob.getPrinterJob();
 		printerJob.setPrintService(printService);
 
-		List<File> renderedPages = convertToImages(300, this.printSize, true);
 		ImagePrintable imagePrintable = new ImagePrintable();
-		for (File file : renderedPages) {
-			FileInputStream stream = new FileInputStream(file);
-			imagePrintable.addImage(ImageIO.read(stream));
-			stream.close();
+		try {
+			List<File>  renderedPages = convertToImages(300, this.printSize, true);
+			for (File file : renderedPages) {
+				FileInputStream stream = new FileInputStream(file);
+				imagePrintable.addImage(ImageIO.read(stream));
+				stream.close();
+			}
+		} catch (IOException e) {
+			throw new PrinterIOException(e);
 		}
 
 		printerJob.setPrintable(imagePrintable);
