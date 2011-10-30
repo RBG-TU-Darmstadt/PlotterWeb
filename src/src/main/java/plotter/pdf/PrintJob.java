@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,11 @@ import plotter.util.Configuration;
 import com.lowagie.text.pdf.PdfReader;
 
 /**
- *
+ * A print job
  */
-public class PrintJob {
+public class PrintJob implements Serializable {
+
+	private static final long serialVersionUID = 8295962761024419184L;
 
 	private String filename;
 	private File pdfFile;
