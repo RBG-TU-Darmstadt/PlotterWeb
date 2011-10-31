@@ -114,10 +114,16 @@ public class Manager {
 				.toString();
 		}
 
+		// Get user
+		HttpSession session = request.getSession(true);
+		User user = (User) session.getAttribute(Process.sessionUser);
+
+		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
+
 		// Create temporary job
 		PrintJob job;
 		try {
-			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename());
+			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename(), user, jobs);
 
 			// Generate thumbnails
 			job.generateThumbnails();
@@ -141,14 +147,9 @@ public class Manager {
 		}
 
 		// Save to session
-		HttpSession session = request.getSession(true);
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionTempJobs);
 		tempJobs.put(key, job);
-
-		// Get mail
-		String mail = ((User) session.getAttribute(Process.sessionUser))
-				.getEmail();
 
 		// Create JSON answer
 		return new JSONObject()
@@ -156,7 +157,7 @@ public class Manager {
 				.put("key", key)
 				.put("job", job.toJSON())
 				.put("images", images)
-				.put("mail", mail)
+				.put("mail", user.getEmail())
 			.toString();
 	}
 
@@ -265,11 +266,12 @@ public class Manager {
 				// Add to pending jobs list
 				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
 				jobs.add(job);
+
+				// TODO send message to webinterface to reload jobs to show the new pending one
 			} catch (PrintException e) {
-				// TODO Send message to webinterface about failed print job
-				e.printStackTrace();
+				job.finished(false);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				// TODO Send message to webinterface about failed print job (should probably show alert)
 				e.printStackTrace();
 			}
 		}

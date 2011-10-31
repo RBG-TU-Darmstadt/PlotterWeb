@@ -27,7 +27,10 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import plotter.entities.Document;
+import plotter.entities.User;
 import plotter.printing.ImagePrintable;
+import plotter.storage.DocumentDAO;
 import plotter.util.Configuration;
 
 import com.lowagie.text.pdf.PdfReader;
@@ -41,6 +44,7 @@ public class PrintJob implements Serializable {
 
 	private String filename;
 	private File pdfFile;
+	private User user;
 	private int numberOfPages;
 	private String printSize;
 	private int copies;
@@ -49,9 +53,16 @@ public class PrintJob implements Serializable {
 	private float pricePerPage;
 	List<File> thumbnails = new ArrayList<File>();
 
-	public PrintJob(String filename, String originalFileName) throws IOException {
+	/**
+	 * Job list stored in the users sessions (needed for removal of the PrintJob upon completion)
+	 */
+	List<PrintJob> jobs;
+
+	public PrintJob(String filename, String originalFileName, User user, List<PrintJob> jobs) throws IOException {
 		this.filename = originalFileName;
 		this.pdfFile = new File(filename);
+		this.user = user;
+		this.jobs = jobs;
 
 		this.numberOfPages = getPageCount();
 	}
@@ -220,6 +231,26 @@ public class PrintJob implements Serializable {
 		printJob.print(doc, printAttributes);
 
 		printDate = new Date();
+	}
+
+	/**
+	 * Bill the printout to the user
+	 * 
+	 * @param success print status
+	 */
+	public void finished(boolean success) {
+		// Remove from jobs in progress session variable
+		jobs.remove(this);
+
+		// Create document
+		// TODO Add boolean success field to Document
+		Document doc = new Document(this.getFilename(), "", this.getPrintSize(),
+				this.getNumberOfPages() * this.getCopies(), this.getCopies(),
+				this.getPrice(), this.user, this.getPrintDate());
+
+		DocumentDAO.create(doc);
+
+		// TODO Notify webinterface to reload jobs
 	}
 
 	public String getFilename() {

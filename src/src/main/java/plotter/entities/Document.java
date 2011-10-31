@@ -32,7 +32,7 @@ public class Document {
 	}
 
 	public Document(String filename, String desc, String format,
-			Integer pageCount, Integer copies, Float price, User u) {
+			Integer pageCount, Integer copies, Float price, User u, Date printDate) {
 		this.fileName = filename;
 		this.description = desc;
 		this.format = format;
@@ -40,6 +40,7 @@ public class Document {
 		this.copies = copies;
 		this.price = price;
 		this.user = u;
+		this.printDate = printDate;
 	}
 
 	@Id

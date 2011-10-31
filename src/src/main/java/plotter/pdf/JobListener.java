@@ -1,41 +1,39 @@
 package plotter.pdf;
 
-import java.util.Date;
-
 import javax.print.event.PrintJobEvent;
 import javax.print.event.PrintJobListener;
 
 public class JobListener implements PrintJobListener {
 
-	PrintJob job;
+	private PrintJob job;
+	private boolean completed = false;
 
 	public JobListener(PrintJob job) {
-		System.out.println(new Date() + ": JobListener created");
-
 		this.job = job;
 	}
 
 	@Override
-	public void printDataTransferCompleted(PrintJobEvent event) {
-		System.out.println(new Date() + ": printDataTransferCompleted");
-	}
+	public void printDataTransferCompleted(PrintJobEvent event) {}
 
 	@Override
 	public void printJobCanceled(PrintJobEvent event) {}
 
 	@Override
 	public void printJobCompleted(PrintJobEvent event) {
-		System.out.println(new Date() + ": printJobCompleted");
+		completed = true;
+
+		job.finished(true);
 	}
 
 	@Override
 	public void printJobFailed(PrintJobEvent event) {
-		// TODO Add status field to Document with Enum completed & failed to represent this
+		job.finished(false);
 	}
 
 	@Override
 	public void printJobNoMoreEvents(PrintJobEvent event) {
-		System.out.println(new Date() + ": printJobNoMoreEvents");
+		if ( ! completed)
+			job.finished(true);
 	}
 
 	@Override
