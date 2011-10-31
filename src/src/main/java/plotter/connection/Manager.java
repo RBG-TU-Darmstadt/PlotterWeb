@@ -74,6 +74,7 @@ public class Manager {
 		}
 
 		// Add pending jobs
+		@SuppressWarnings("unchecked")
 		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
 		for (PrintJob job : jobs) {
 			json.put(job.toJSON());
@@ -143,6 +144,7 @@ public class Manager {
 		}
 
 		// Save to session
+		@SuppressWarnings("unchecked")
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionTempJobs);
 		tempJobs.put(key, job);
@@ -162,6 +164,7 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
+		@SuppressWarnings("unchecked")
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionTempJobs);
 		PrintJob job = tempJobs.get(jobKey);
@@ -188,6 +191,7 @@ public class Manager {
 			HttpServletRequest request) throws JSONException {
 		// Get from session
 		HttpSession session = request.getSession(true);
+		@SuppressWarnings("unchecked")
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session
 				.getAttribute(Process.sessionTempJobs);
 		PrintJob job = tempJobs.get(jobKey);
@@ -258,6 +262,7 @@ public class Manager {
 		public void run() {
 			try {
 				// Add to pending jobs list
+				@SuppressWarnings("unchecked")
 				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
 				jobs.add(job);
 

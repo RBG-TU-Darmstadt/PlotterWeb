@@ -240,6 +240,7 @@ public class PrintJob implements Serializable {
 	public void finished(boolean success) {
 		// Get session variables
 		User user = (User) session.getAttribute(plotter.servlet.Process.sessionUser);
+		@SuppressWarnings("unchecked")
 		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(plotter.servlet.Process.sessionJobs);
 
 		// Remove from jobs in progress session variable

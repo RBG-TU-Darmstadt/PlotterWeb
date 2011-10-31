@@ -105,12 +105,14 @@ public class Process extends HttpServlet {
 //		session.setAttribute(sessionUser, user);
 
 		// Create temporary job storage
+		@SuppressWarnings("unchecked")
 		Map<String, PrintJob> tempJobs = (LinkedHashMap<String, PrintJob>) session.getAttribute(sessionTempJobs);
 		if(tempJobs == null) {
 			tempJobs = new LinkedHashMap<String, PrintJob>();
 			session.setAttribute(sessionTempJobs, tempJobs);
 		}
 		// Create print job storage
+		@SuppressWarnings("unchecked")
 		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(sessionJobs);
 		if(jobs == null) {
 			jobs = new ArrayList<PrintJob>();
