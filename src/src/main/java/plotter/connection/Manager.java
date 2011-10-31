@@ -261,11 +261,6 @@ public class Manager {
 		@Override
 		public void run() {
 			try {
-				// Add to pending jobs list
-				@SuppressWarnings("unchecked")
-				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
-				jobs.add(job);
-
 				job.print();
 
 				// TODO send message to webinterface to reload jobs to show the new pending one

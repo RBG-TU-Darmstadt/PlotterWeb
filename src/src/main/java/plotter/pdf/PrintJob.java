@@ -228,6 +228,11 @@ public class PrintJob implements Serializable {
 
 		printDate = new Date();
 
+		// Add to pending jobs list
+		@SuppressWarnings("unchecked")
+		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(plotter.servlet.Process.sessionJobs);
+		jobs.add(this);
+
 		Doc doc = new SimpleDoc(imagePrintable, flavor, null);
 		printJob.print(doc, printAttributes);
 	}
