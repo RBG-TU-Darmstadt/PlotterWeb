@@ -1,11 +1,9 @@
 package plotter.connection;
 
-import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,12 +116,10 @@ public class Manager {
 		HttpSession session = request.getSession(true);
 		User user = (User) session.getAttribute(Process.sessionUser);
 
-		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
-
 		// Create temporary job
 		PrintJob job;
 		try {
-			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename(), user, jobs);
+			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename(), session);
 
 			// Generate thumbnails
 			job.generateThumbnails();
@@ -261,11 +257,11 @@ public class Manager {
 		@Override
 		public void run() {
 			try {
-				job.print();
-
 				// Add to pending jobs list
 				List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(Process.sessionJobs);
 				jobs.add(job);
+
+				job.print();
 
 				// TODO send message to webinterface to reload jobs to show the new pending one
 			} catch (PrintException e) {

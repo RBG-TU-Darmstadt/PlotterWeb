@@ -267,18 +267,22 @@ body {
 }
 
 .plotter-view .plotter-cnt .plotter-jobs-cnt .plotter-job .plotter-job-item div {
-	width:280px;
 	overflow:hidden;
+	float:left;
 	text-overflow:ellipsis;
 	white-space:nowrap;
 }
 
 .plotter-view .plotter-cnt .plotter-jobs-cnt .plotter-job .plotter-job-item .plotter-job-item-left {
-	float:left;
+	width:320px;
+}
+
+.plotter-view .plotter-cnt .plotter-jobs-cnt .plotter-job .plotter-job-item .plotter-job-item-center {
+	width:200px;
 }
 
 .plotter-view .plotter-cnt .plotter-jobs-cnt .plotter-job .plotter-job-item .plotter-job-item-right {
-	float:right;
+	width:60px;
 }
 
 .plotter-view .plotter-cnt .plotter-jobs-cnt .plotter-job .plotter-job-item label {

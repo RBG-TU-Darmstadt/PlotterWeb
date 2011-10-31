@@ -22,6 +22,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
 import javax.print.attribute.standard.MediaSizeName;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
@@ -44,7 +45,6 @@ public class PrintJob implements Serializable {
 
 	private String filename;
 	private File pdfFile;
-	private User user;
 	private int numberOfPages;
 	private String printSize;
 	private int copies;
@@ -54,15 +54,14 @@ public class PrintJob implements Serializable {
 	List<File> thumbnails = new ArrayList<File>();
 
 	/**
-	 * Job list stored in the users sessions (needed for removal of the PrintJob upon completion)
+	 * The related session (needed for removal of the PrintJob upon completion)
 	 */
-	List<PrintJob> jobs;
+	private HttpSession session;
 
-	public PrintJob(String filename, String originalFileName, User user, List<PrintJob> jobs) throws IOException {
+	public PrintJob(String filename, String originalFileName, HttpSession session) throws IOException {
 		this.filename = originalFileName;
 		this.pdfFile = new File(filename);
-		this.user = user;
-		this.jobs = jobs;
+		this.session = session;
 
 		this.numberOfPages = getPageCount();
 	}
@@ -227,10 +226,10 @@ public class PrintJob implements Serializable {
 			stream.close();
 		}
 
+		printDate = new Date();
+
 		Doc doc = new SimpleDoc(imagePrintable, flavor, null);
 		printJob.print(doc, printAttributes);
-
-		printDate = new Date();
 	}
 
 	/**
@@ -239,6 +238,10 @@ public class PrintJob implements Serializable {
 	 * @param success print status
 	 */
 	public void finished(boolean success) {
+		// Get session variables
+		User user = (User) session.getAttribute(plotter.servlet.Process.sessionUser);
+		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(plotter.servlet.Process.sessionJobs);
+
 		// Remove from jobs in progress session variable
 		jobs.remove(this);
 
@@ -246,7 +249,7 @@ public class PrintJob implements Serializable {
 		// TODO Add boolean success field to Document
 		Document doc = new Document(this.getFilename(), "", this.getPrintSize(),
 				this.getNumberOfPages() * this.getCopies(), this.getCopies(),
-				this.getPrice(), this.user, this.getPrintDate());
+				this.getPrice(), user, this.getPrintDate());
 
 		DocumentDAO.create(doc);
 
@@ -305,7 +308,7 @@ public class PrintJob implements Serializable {
 
 		if (this.getPrintDate() != null) {
 			object.put("date", this.getPrintDate().getTime());
-			object.put("status", "complete");
+			object.put("status", "in-progress");
 		}
 
 		return object;

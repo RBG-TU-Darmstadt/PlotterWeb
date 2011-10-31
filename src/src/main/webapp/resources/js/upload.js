@@ -332,10 +332,13 @@ upload = {
 						"<label>Datum/Zeit:</label> " + plotter.formatDate(job.date) + "<br />" +
 						"<label>Preis:</label> " + plotter.formatPrice(job.price) +
 					"</div>" +
-					"<div class='plotter-job-item-right'>" +
+					"<div class='plotter-job-item-center'>" +
 						"<label>Format:</label> " + job.format + "<br />" +
 						"<label>Seiten:</label> " + job.pages + "<br />" +
 						"<label>Kopien:</label> " + job.copies +
+					"</div>" +
+					"<div class='plotter-job-item-right'>" +
+						job.status +
 					"</div>" +
 				"</div>");
 	}
