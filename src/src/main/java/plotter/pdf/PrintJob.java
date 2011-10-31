@@ -178,8 +178,6 @@ public class PrintJob implements Serializable {
 		} else if (this.printSize.equals("A2")) {
 			mediaSize = MediaSizeName.ISO_A2;
 		}
-		
-		mediaSize = MediaSizeName.ISO_A4;
 
 		DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 
