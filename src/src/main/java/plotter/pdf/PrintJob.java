@@ -33,6 +33,7 @@ import plotter.entities.User;
 import plotter.printing.ImagePrintable;
 import plotter.storage.DocumentDAO;
 import plotter.util.Configuration;
+import plotter.util.PlotterUtil;
 
 import com.lowagie.text.pdf.PdfReader;
 
@@ -257,6 +258,10 @@ public class PrintJob implements Serializable {
 				this.getPrice(), user, this.getPrintDate(), success);
 
 		DocumentDAO.create(doc);
+		
+		if (success) {
+			PlotterUtil.sendMail(doc);
+		}
 
 		// TODO Notify webinterface to reload jobs
 	}
