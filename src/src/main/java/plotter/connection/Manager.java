@@ -16,8 +16,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.EmailValidator;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.annotations.RemoteMethod;
 import org.directwebremoting.annotations.RemoteProxy;
 import org.directwebremoting.dwrp.CommonsFileUpload;
@@ -237,7 +240,7 @@ public class Manager {
 		user.setLastName((String) principal.getAttributes().get("surname"));
 
 		// Print file in background thread
-		Thread printThread = new Thread(new PrintThread(session, job));
+		Thread printThread = new Thread(new PrintThread(session, WebContextFactory.get().getScriptSession(), job));
 		printThread.start();
 
 		// Remove temporary job from session
@@ -251,10 +254,12 @@ public class Manager {
 	class PrintThread implements Runnable {
 
 		HttpSession session;
+		ScriptSession scriptSession;
 		PrintJob job;
 
-		public PrintThread(HttpSession session, PrintJob job) {
+		public PrintThread(HttpSession session, ScriptSession scriptSession, PrintJob job) {
 			this.session = session;
+			this.scriptSession = scriptSession;
 			this.job = job;
 		}
 
@@ -263,17 +268,18 @@ public class Manager {
 			try {
 				job.print();
 
-				// TODO send message to webinterface to reload jobs to show the new pending one
+				// TODO send message to webinterface to reload jobs to show the
+				// new pending one
 			} catch (PrintException e) {
 				e.printStackTrace();
 
 				job.finished(false);
 			} catch (IOException e) {
-				// TODO Send message to webinterface about failed print job (should probably show alert)
+				scriptSession.addScript(new ScriptBuffer(
+						"alert(\"Fehler beim konvertieren des PDFs.\")"));
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	/**
