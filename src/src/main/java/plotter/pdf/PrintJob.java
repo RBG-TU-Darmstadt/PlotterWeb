@@ -35,6 +35,7 @@ import plotter.entities.User;
 import plotter.printing.ImagePrintable;
 import plotter.storage.DocumentDAO;
 import plotter.util.Configuration;
+import plotter.util.PlotterUtil;
 
 import com.lowagie.text.pdf.PdfReader;
 
@@ -182,6 +183,8 @@ public class PrintJob implements Serializable {
 	 *             on error while printing
 	 */
 	public void print() throws IOException, PrintException {
+		printDate = new Date();
+
 		MediaSizeName mediaSizeName = null;
 		if (this.printSize.equals("A0")) {
 			mediaSizeName = MediaSizeName.ISO_A0;
@@ -240,8 +243,6 @@ public class PrintJob implements Serializable {
 			stream.close();
 		}
 
-		printDate = new Date();
-
 		// Add to pending jobs list
 		@SuppressWarnings("unchecked")
 		List<PrintJob> jobs = (ArrayList<PrintJob>) session.getAttribute(plotter.servlet.Process.sessionJobs);
@@ -269,12 +270,15 @@ public class PrintJob implements Serializable {
 		jobs.remove(this);
 
 		// Create document
-		// TODO Add boolean success field to Document
 		Document doc = new Document(this.getFilename(), "", this.getPrintSize(),
 				this.getNumberOfPages() * this.getCopies(), this.getCopies(),
-				this.getPrice(), user, this.getPrintDate());
+				this.getPrice(), user, this.getPrintDate(), success);
 
 		DocumentDAO.create(doc);
+		
+		if (success) {
+			PlotterUtil.sendMail(doc);
+		}
 
 		// TODO Notify webinterface to reload jobs
 

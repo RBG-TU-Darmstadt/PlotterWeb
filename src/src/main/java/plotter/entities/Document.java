@@ -27,12 +27,13 @@ public class Document {
 	private Integer copies;
 	private String format;
 	private Float price;
+	private boolean success;
 
 	public Document() {
 	}
 
 	public Document(String filename, String desc, String format,
-			Integer pageCount, Integer copies, Float price, User u, Date printDate) {
+			Integer pageCount, Integer copies, Float price, User u, Date printDate, boolean success) {
 		this.fileName = filename;
 		this.description = desc;
 		this.format = format;
@@ -41,6 +42,7 @@ public class Document {
 		this.price = price;
 		this.user = u;
 		this.printDate = printDate;
+		this.success = success;
 	}
 
 	@Id
@@ -127,6 +129,15 @@ public class Document {
 		return fileName;
 	}
 
+	@Column(name = "PRINTED")
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
 	public String toString() {
 		String result = "User " + this.user + " printed " + this.fileName
 				+ " with description \"" + this.description + "\" and " + this.pageCount
@@ -147,7 +158,9 @@ public class Document {
 		object.put("format", this.getFormat());
 		object.put("date", this.getPrintDate().getTime());
 		object.put("price", this.getPrice());
-		object.put("status", "complete"); // TODO Set to 'complete' or 'failure' depending on new status variable
+		
+		String status = (success) ? "complete" : "failure";
+		object.put("status", status);
 
 		if(includeUser) {
 			object.put("username", this.getUser().getFirstName() + " " + this.getUser().getLastName());
