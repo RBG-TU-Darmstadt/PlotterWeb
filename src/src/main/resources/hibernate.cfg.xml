@@ -12,7 +12,7 @@
 		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
 		<!-- Deployment -->
-		<property name="connection.url">jdbc:postgresql://localhost:5432/hibernatePlotter</property>
+		<property name="connection.url">jdbc:postgresql://localhost:5432/PlotterWeb</property>
 		<property name="connection.username">postgres</property>
 		<property name="connection.password">pheeMohlu1oh</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>
