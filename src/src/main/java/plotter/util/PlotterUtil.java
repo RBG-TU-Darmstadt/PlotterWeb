@@ -20,8 +20,9 @@ import javax.mail.internet.MimeMultipart;
 import plotter.entities.Document;
 
 public class PlotterUtil {
-	
-	private static Logger logger = Logger.getLogger(PlotterUtil.class.getName());
+
+	private static Logger logger = Logger
+			.getLogger(PlotterUtil.class.getName());
 
 	public static String getHumanReadable(Long millis) {
 		return String.format(
@@ -31,7 +32,7 @@ public class PlotterUtil {
 						- TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
 								.toMinutes(millis)));
 	}
-	
+
 	public static void sendMail(Document doc) {
 		String charset = "ISO-8859-1";
 		String contentType = "text/html";
@@ -97,7 +98,8 @@ public class PlotterUtil {
 					+ "\", succesfully printed file \" " + doc.getFileName()
 					+ "\" on \"" + doc.getFormat() + "\".");
 		} catch (AddressException e) {
-			logger.severe("Couldn't parse e-mail address ("+doc.getUser().getEmail()+"). E-mail was not sent.");
+			logger.severe("Couldn't parse e-mail address ("
+					+ doc.getUser().getEmail() + "). E-mail was not sent.");
 		} catch (MessagingException e) {
 			logger.severe("Couldn't set e-mail content. E-mail was not sent.");
 			e.printStackTrace();
