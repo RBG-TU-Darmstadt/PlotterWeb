@@ -265,6 +265,8 @@ public class Manager {
 
 				// TODO send message to webinterface to reload jobs to show the new pending one
 			} catch (PrintException e) {
+				e.printStackTrace();
+
 				job.finished(false);
 			} catch (IOException e) {
 				// TODO Send message to webinterface about failed print job (should probably show alert)
