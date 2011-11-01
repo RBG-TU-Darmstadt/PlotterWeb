@@ -38,6 +38,7 @@ import plotter.printing.PrintJob;
 import plotter.printing.PrintJobException;
 import plotter.servlet.Process;
 import plotter.storage.DocumentDAO;
+import plotter.storage.UserDAO;
 import plotter.util.Export;
 
 @RemoteProxy
@@ -238,6 +239,7 @@ public class Manager {
 		user.setEmail(mail);
 		user.setFirstName((String) principal.getAttributes().get("givenName"));
 		user.setLastName((String) principal.getAttributes().get("surname"));
+		UserDAO.update(user);
 
 		// Print file in background thread
 		Thread printThread = new Thread(new PrintThread(job));
