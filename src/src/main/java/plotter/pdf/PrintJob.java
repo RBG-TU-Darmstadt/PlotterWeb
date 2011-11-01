@@ -21,6 +21,8 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.JobName;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.MediaSize;
 import javax.print.attribute.standard.MediaSizeName;
 import javax.servlet.http.HttpSession;
 
@@ -100,7 +102,7 @@ public class PrintJob implements Serializable {
 	 * @param resolution
 	 *            the resolution in dpi
 	 * @param paperSize
-	 *            the paper size (e.g. a2, a4, a10...)
+	 *            the paper size (e.g. A2, A4, A10...)
 	 * @param portrait
 	 *            rotate the images to portrait format
 	 * @return a list of converted image files
@@ -123,7 +125,7 @@ public class PrintJob implements Serializable {
 		command.add("-dGraphicsAlphaBits=4");
 		command.add("-r" + resolution);
 		command.add("-dPDFFitPage");
-		command.add("-sPAPERSIZE=" + paperSize);
+		command.add("-sPAPERSIZE=" + paperSize.toLowerCase());
 		if (portrait) {
 			command.add("-dNORANGEPAGESIZE");
 		}
@@ -169,7 +171,7 @@ public class PrintJob implements Serializable {
 	 * @throws IOException
 	 */
 	public void generateThumbnails() throws IOException {
-		thumbnails = convertToImages(100, "a10", false);
+		thumbnails = convertToImages(100, "A10", false);
 	}
 	
 	/**
@@ -182,21 +184,33 @@ public class PrintJob implements Serializable {
 	 */
 	public void print() throws IOException, PrintException {
 		printDate = new Date();
-		
-		MediaSizeName mediaSize = null;
+
+		MediaSizeName mediaSizeName = null;
 		if (this.printSize.equals("A0")) {
-			mediaSize = MediaSizeName.ISO_A0;
+			mediaSizeName = MediaSizeName.ISO_A0;
 		} else if (this.printSize.equals("A1")) {
-			mediaSize = MediaSizeName.ISO_A1;
+			mediaSizeName = MediaSizeName.ISO_A1;
 		} else if (this.printSize.equals("A2")) {
-			mediaSize = MediaSizeName.ISO_A2;
+			mediaSizeName = MediaSizeName.ISO_A2;
 		}
+
+		// Calculate printable area
+		float margin = Float.parseFloat(Configuration.getProperty("plotter.device.margin"));
+		MediaSize mediaSize = MediaSize.getMediaSizeForName(mediaSizeName);
+		MediaPrintableArea printableArea = new MediaPrintableArea(
+				margin,
+				margin,
+				mediaSize.getX(MediaSize.MM) - margin * 2,
+				mediaSize.getY(MediaSize.MM) - margin * 2,
+				MediaPrintableArea.MM
+			);
 
 		DocFlavor flavor = DocFlavor.SERVICE_FORMATTED.PRINTABLE;
 
 		PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
 		printAttributes.add(new Copies(this.copies));
-		printAttributes.add(mediaSize);
+		printAttributes.add(mediaSizeName);
+		printAttributes.add(printableArea);
 
 		PrintService printServices[] = PrintServiceLookup.lookupPrintServices(
 				flavor, printAttributes);
@@ -222,7 +236,7 @@ public class PrintJob implements Serializable {
 		printJob.addPrintJobListener(new JobListener(this));
 
 		ImagePrintable imagePrintable = new ImagePrintable();
-		List<File>  renderedPages = convertToImages(300, this.printSize, true);
+		List<File> renderedPages = convertToImages(300, this.printSize, true);
 		for (File file : renderedPages) {
 			FileInputStream stream = new FileInputStream(file);
 			imagePrintable.addImage(ImageIO.read(stream));
@@ -236,6 +250,9 @@ public class PrintJob implements Serializable {
 
 		Doc doc = new SimpleDoc(imagePrintable, flavor, null);
 		printJob.print(doc, printAttributes);
+
+		// Remove rendered images
+		removeTmpFiles(renderedPages);
 	}
 
 	/**
@@ -264,6 +281,9 @@ public class PrintJob implements Serializable {
 		}
 
 		// TODO Notify webinterface to reload jobs
+
+		// Remove thumbnails
+		removeTmpFiles(thumbnails);
 	}
 
 	public String getFilename() {
@@ -322,6 +342,12 @@ public class PrintJob implements Serializable {
 		}
 
 		return object;
+	}
+
+	private static void removeTmpFiles(List<File> files) {
+		for (File file : files) {
+			file.delete();
+		}
 	}
 
 }
