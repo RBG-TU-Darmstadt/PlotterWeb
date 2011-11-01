@@ -278,7 +278,7 @@ public class PrintJob implements Serializable {
 				this.getPrice(), user, this.getPrintDate(), success);
 
 		DocumentDAO.create(doc);
-		
+
 		if (success) {
 			PlotterUtil.sendMail(doc);
 		}
