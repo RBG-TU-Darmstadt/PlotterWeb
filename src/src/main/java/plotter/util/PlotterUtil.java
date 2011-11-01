@@ -93,15 +93,24 @@ public class PlotterUtil {
 			// add content and send email
 			msg.setContent(multipart, contentType + "; charset=" + charset);
 			msg.setSentDate(new Date());
-			Transport.send(msg);
-			logger.info("Sending e-mail to \"" + doc.getUser().getEmail()
-					+ "\", succesfully printed file \" " + doc.getFileName()
-					+ "\" on \"" + doc.getFormat() + "\".");
+
+			try {
+				Transport.send(msg);
+
+				logger.info("Sent e-mail to \"" + doc.getUser().getEmail()
+						+ "\", succesfully printed file \" " + doc.getFileName()
+						+ "\" on \"" + doc.getFormat() + "\".");
+			} catch (MessagingException e) {
+				logger.severe("Error sending E-mail.");
+
+				e.printStackTrace();
+			}
 		} catch (AddressException e) {
 			logger.severe("Couldn't parse e-mail address ("
 					+ doc.getUser().getEmail() + "). E-mail was not sent.");
 		} catch (MessagingException e) {
-			logger.severe("Couldn't set e-mail content. E-mail was not sent.");
+			logger.severe("Couldn't create e-mail content. E-mail was not sent.");
+
 			e.printStackTrace();
 		}
 
