@@ -235,6 +235,9 @@ public class PrintJob implements Serializable {
 
 		Doc doc = new SimpleDoc(imagePrintable, flavor, null);
 		printJob.print(doc, printAttributes);
+
+		// Remove rendered images
+		removeTmpFiles(renderedPages);
 	}
 
 	/**
@@ -260,6 +263,9 @@ public class PrintJob implements Serializable {
 		DocumentDAO.create(doc);
 
 		// TODO Notify webinterface to reload jobs
+
+		// Remove thumbnails
+		removeTmpFiles(thumbnails);
 	}
 
 	public String getFilename() {
@@ -318,6 +324,12 @@ public class PrintJob implements Serializable {
 		}
 
 		return object;
+	}
+
+	private static void removeTmpFiles(List<File> files) {
+		for (File file : files) {
+			file.delete();
+		}
 	}
 
 }
