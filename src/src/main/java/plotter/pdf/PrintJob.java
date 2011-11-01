@@ -27,6 +27,8 @@ import javax.print.attribute.standard.MediaSizeName;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.ScriptSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,14 +59,16 @@ public class PrintJob implements Serializable {
 	List<File> thumbnails = new ArrayList<File>();
 
 	/**
-	 * The related session (needed for removal of the PrintJob upon completion)
+	 * The related session & dwr script session (needed for removal of the PrintJob upon completion)
 	 */
 	private HttpSession session;
+	private ScriptSession scriptSession;
 
-	public PrintJob(String filename, String originalFileName, HttpSession session) throws IOException {
+	public PrintJob(String filename, String originalFileName, HttpSession session, ScriptSession scriptSession) throws IOException {
 		this.filename = originalFileName;
 		this.pdfFile = new File(filename);
 		this.session = session;
+		this.scriptSession = scriptSession;
 
 		this.numberOfPages = getPageCount();
 	}
@@ -280,7 +284,8 @@ public class PrintJob implements Serializable {
 			PlotterUtil.sendMail(doc);
 		}
 
-		// TODO Notify webinterface to reload jobs
+		// Notify webinterface to reload jobs
+		getScriptSession().addScript(new ScriptBuffer("upload.getJobs()"));
 
 		// Remove thumbnails
 		removeTmpFiles(thumbnails);
@@ -326,6 +331,10 @@ public class PrintJob implements Serializable {
 
 	public Date getPrintDate() {
 		return printDate;
+	}
+
+	public ScriptSession getScriptSession() {
+		return scriptSession;
 	}
 
 	public JSONObject toJSON() throws JSONException {

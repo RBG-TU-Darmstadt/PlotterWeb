@@ -341,7 +341,12 @@ upload = {
 						job.status +
 					"</div>" +
 				"</div>");
+	},
+
+	printingError: function() {
+		alert("Fehler beim konvertieren des PDFs.");
 	}
+
 };
 
 $(document).ready(function() {

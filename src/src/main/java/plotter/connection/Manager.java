@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.EmailValidator;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
@@ -123,7 +122,8 @@ public class Manager {
 		// Create temporary job
 		PrintJob job;
 		try {
-			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename(), session);
+			job = new PrintJob(tmp.getAbsolutePath(), file.getFilename(),
+					session, WebContextFactory.get().getScriptSession());
 
 			// Generate thumbnails
 			job.generateThumbnails();
@@ -240,7 +240,7 @@ public class Manager {
 		user.setLastName((String) principal.getAttributes().get("surname"));
 
 		// Print file in background thread
-		Thread printThread = new Thread(new PrintThread(session, WebContextFactory.get().getScriptSession(), job));
+		Thread printThread = new Thread(new PrintThread(job));
 		printThread.start();
 
 		// Remove temporary job from session
@@ -253,13 +253,9 @@ public class Manager {
 
 	class PrintThread implements Runnable {
 
-		HttpSession session;
-		ScriptSession scriptSession;
 		PrintJob job;
 
-		public PrintThread(HttpSession session, ScriptSession scriptSession, PrintJob job) {
-			this.session = session;
-			this.scriptSession = scriptSession;
+		public PrintThread(PrintJob job) {
 			this.job = job;
 		}
 
@@ -268,15 +264,15 @@ public class Manager {
 			try {
 				job.print();
 
-				// TODO send message to webinterface to reload jobs to show the
-				// new pending one
+				// Send message to webinterface to reload jobs to show the new pending one
+				job.getScriptSession().addScript(new ScriptBuffer("upload.getJobs()"));
 			} catch (PrintException e) {
 				e.printStackTrace();
 
 				job.finished(false);
 			} catch (IOException e) {
-				scriptSession.addScript(new ScriptBuffer(
-						"alert(\"Fehler beim konvertieren des PDFs.\")"));
+				job.getScriptSession().addScript(new ScriptBuffer("upload.printingError()"));
+
 				e.printStackTrace();
 			}
 		}
