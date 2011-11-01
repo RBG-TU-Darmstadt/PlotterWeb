@@ -1,4 +1,4 @@
-package plotter.pdf;
+package plotter.printing;
 
 import javax.print.event.PrintJobEvent;
 import javax.print.event.PrintJobListener;

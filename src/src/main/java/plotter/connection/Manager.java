@@ -32,10 +32,10 @@ import org.json.JSONObject;
 
 import plotter.entities.Document;
 import plotter.entities.User;
-import plotter.pdf.CopiesException;
-import plotter.pdf.FormatException;
-import plotter.pdf.PrintJob;
-import plotter.pdf.PrintJobException;
+import plotter.printing.CopiesException;
+import plotter.printing.FormatException;
+import plotter.printing.PrintJob;
+import plotter.printing.PrintJobException;
 import plotter.servlet.Process;
 import plotter.storage.DocumentDAO;
 import plotter.util.Export;

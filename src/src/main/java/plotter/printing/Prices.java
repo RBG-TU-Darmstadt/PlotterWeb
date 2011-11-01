@@ -1,4 +1,4 @@
-package plotter.pdf;
+package plotter.printing;
 
 import java.util.HashMap;
 import java.util.Map;

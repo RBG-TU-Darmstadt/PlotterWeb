@@ -1,4 +1,4 @@
-package plotter.pdf;
+package plotter.printing;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,7 +34,6 @@ import org.json.JSONObject;
 
 import plotter.entities.Document;
 import plotter.entities.User;
-import plotter.printing.ImagePrintable;
 import plotter.storage.DocumentDAO;
 import plotter.util.Configuration;
 import plotter.util.PlotterUtil;

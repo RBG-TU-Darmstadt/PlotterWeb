@@ -16,8 +16,8 @@ import javax.servlet.http.HttpSession;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 
-import plotter.pdf.PrintJob;
-import plotter.pdf.Prices;
+import plotter.printing.Prices;
+import plotter.printing.PrintJob;
 import plotter.storage.UserDAO;
 import plotter.entities.User;
 

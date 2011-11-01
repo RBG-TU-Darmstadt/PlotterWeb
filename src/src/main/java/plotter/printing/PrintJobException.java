@@ -1,4 +1,4 @@
-package plotter.pdf;
+package plotter.printing;
 
 abstract public class PrintJobException extends Exception {
 

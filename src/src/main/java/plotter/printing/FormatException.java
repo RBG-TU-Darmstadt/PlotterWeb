@@ -1,4 +1,4 @@
-package plotter.pdf;
+package plotter.printing;
 
 public class FormatException extends PrintJobException {
 
