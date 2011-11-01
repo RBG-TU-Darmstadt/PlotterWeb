@@ -180,6 +180,8 @@ public class PrintJob implements Serializable {
 	 *             on error while printing
 	 */
 	public void print() throws IOException, PrintException {
+		printDate = new Date();
+		
 		MediaSizeName mediaSize = null;
 		if (this.printSize.equals("A0")) {
 			mediaSize = MediaSizeName.ISO_A0;
@@ -225,8 +227,6 @@ public class PrintJob implements Serializable {
 			imagePrintable.addImage(ImageIO.read(stream));
 			stream.close();
 		}
-
-		printDate = new Date();
 
 		// Add to pending jobs list
 		@SuppressWarnings("unchecked")
