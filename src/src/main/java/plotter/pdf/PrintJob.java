@@ -252,10 +252,9 @@ public class PrintJob implements Serializable {
 		jobs.remove(this);
 
 		// Create document
-		// TODO Add boolean success field to Document
 		Document doc = new Document(this.getFilename(), "", this.getPrintSize(),
 				this.getNumberOfPages() * this.getCopies(), this.getCopies(),
-				this.getPrice(), user, this.getPrintDate());
+				this.getPrice(), user, this.getPrintDate(), success);
 
 		DocumentDAO.create(doc);
 
