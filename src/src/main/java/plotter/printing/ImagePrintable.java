@@ -55,10 +55,12 @@ public class ImagePrintable implements Printable {
 			return Printable.NO_SUCH_PAGE;
 		}
 
-		Graphics2D g2 = (Graphics2D) graphics;
 		BufferedImage image = this.images.get(pageIndex);
-		graphics.translate((int) (pf.getImageableX()),
-				(int) (pf.getImageableY()));
+
+		Graphics2D g2d = (Graphics2D) graphics;
+
+		// Scale canvas to fit image
+		g2d.translate(pf.getImageableX(), pf.getImageableY());
 		double pageWidth = pf.getImageableWidth();
 		double pageHeight = pf.getImageableHeight();
 		double imageWidth = image.getWidth();
@@ -66,8 +68,11 @@ public class ImagePrintable implements Printable {
 		double scaleX = pageWidth / imageWidth;
 		double scaleY = pageHeight / imageHeight;
 		double scaleFactor = Math.min(scaleX, scaleY);
-		g2.scale(scaleFactor, scaleFactor);
-		graphics.drawImage(image, 0, 0, null);
+		g2d.scale(scaleFactor, scaleFactor);
+
+		// Draw image on canvas
+	    g2d.drawImage(image, 0, 0, null);
+
 		return Printable.PAGE_EXISTS;
 	}
 }
