@@ -265,7 +265,7 @@ public class Manager {
 				job.print();
 
 				// Send message to webinterface to reload jobs to show the new pending one
-				job.getScriptSession().addScript(new ScriptBuffer("upload.getJobs()"));
+				job.getScriptSession().addScript(new ScriptBuffer("upload.receiveJob()"));
 			} catch (PrintException e) {
 				e.printStackTrace();
 

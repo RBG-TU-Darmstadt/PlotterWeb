@@ -285,7 +285,7 @@ public class PrintJob implements Serializable {
 		}
 
 		// Notify webinterface to reload jobs
-		getScriptSession().addScript(new ScriptBuffer("upload.getJobs()"));
+		getScriptSession().addScript(new ScriptBuffer("upload.receiveJob()"));
 
 		// Remove thumbnails
 		removeTmpFiles(thumbnails);

@@ -296,23 +296,11 @@ upload = {
 		$.uniform.update('input[name=file], #format, #price, input[name=print-confirm], #print-button, #cancel-button');
 	},
 
-	receiveJobCallback: function(data) {
-		$.proxy(upload.receiveJob, upload)(data);
-	},
-
 	receiveJob: function(json) {
 		// Clear the PlotterApplication timeout
 		clearTimeout(this.timeoutCallback);
 
-		var job = $.parseJSON(json);
-
-		// Show job info
-		$("#jobs-dialog .plotter-job:first").prepend(this.renderJob(job));
-
-		// Fade out activity indicator
-		$("#jobs-dialog .plotter-job:first .plotter-job-activity").fadeOut('slow', function() {
-			$(this).remove();
-		});
+		upload.getJobs();
 	},
 
 	receiveJobTimeout: function() {
