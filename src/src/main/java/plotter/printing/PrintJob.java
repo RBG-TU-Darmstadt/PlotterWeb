@@ -213,7 +213,6 @@ public class PrintJob implements Serializable {
 		PrintRequestAttributeSet printAttributes = new HashPrintRequestAttributeSet();
 		printAttributes.add(new Copies(this.copies));
 		printAttributes.add(mediaSizeName);
-		printAttributes.add(printableArea);
 
 		PrintService printServices[] = PrintServiceLookup.lookupPrintServices(
 				flavor, printAttributes);
@@ -233,6 +232,7 @@ public class PrintJob implements Serializable {
 		}
 
 		// Do not set this before looking up printers
+		printAttributes.add(printableArea);
 		printAttributes.add(new JobName("PlotterWeb: " + getFilename(), null));
 
 		DocPrintJob printJob = printService.createPrintJob();
