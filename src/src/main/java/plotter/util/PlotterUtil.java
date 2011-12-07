@@ -6,16 +6,13 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 import plotter.entities.Document;
 
@@ -80,18 +77,11 @@ public class PlotterUtil {
 
 			msg.setSubject(subject);
 
-			// define first Part
-			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setContent(content, contentType);
-			messageBodyPart.setHeader("Content-Type", contentType
+			// set content and send mail
+			msg.setContent(content, contentType);
+			msg.setHeader("Content-Type", contentType
 					+ "; charset=" + charset);
 
-			// creating multipart
-			MimeMultipart multipart = new MimeMultipart("related");
-			multipart.addBodyPart(messageBodyPart);
-
-			// add content and send email
-			msg.setContent(multipart, contentType + "; charset=" + charset);
 			msg.setSentDate(new Date());
 
 			try {
