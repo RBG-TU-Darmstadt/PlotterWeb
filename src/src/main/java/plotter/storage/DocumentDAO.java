@@ -67,7 +67,7 @@ public class DocumentDAO {
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 
-		Query query = session.createQuery("from Document");
+		Query query = session.createQuery("from Document where printed = true");
 		List<Document> list = query.list();
 
 		return list;
